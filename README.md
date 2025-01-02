@@ -7,3 +7,5 @@
 - [FlowChart](https://github.com/han-chunsik/hhplus-service/wiki/%EC%84%A4%EA%B3%84-%7C-%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD-%EC%A0%95%EC%9D%98-%EB%B0%8F-%EC%84%A4%EA%B3%84#-flowchart)
 - [Sequencediagram](https://github.com/han-chunsik/hhplus-service/wiki/%EC%84%A4%EA%B3%84-%7C-%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD-%EC%A0%95%EC%9D%98-%EB%B0%8F-%EC%84%A4%EA%B3%84#-sequencediagram)
 - [Statediagram](https://github.com/han-chunsik/hhplus-service/wiki/%EC%84%A4%EA%B3%84-%7C-%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD-%EC%A0%95%EC%9D%98-%EB%B0%8F-%EC%84%A4%EA%B3%84#-statediagram)
+
+### [3. ERD](https://github.com/han-chunsik/hhplus-service/wiki/%EC%84%A4%EA%B3%84-%7C-DB-%EC%84%A4%EA%B3%84)

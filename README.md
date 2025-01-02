@@ -18,3 +18,5 @@ docker-compose up -d
 - [Statediagram](https://github.com/han-chunsik/hhplus-service/wiki/%EC%84%A4%EA%B3%84-%7C-%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD-%EC%A0%95%EC%9D%98-%EB%B0%8F-%EC%84%A4%EA%B3%84#-statediagram)
 
 ### [3. ERD](https://github.com/han-chunsik/hhplus-service/wiki/%EC%84%A4%EA%B3%84-%7C-DB-%EC%84%A4%EA%B3%84)
+
+### [4. 패키지 구조](https://github.com/han-chunsik/hhplus-service/wiki/%EC%84%A4%EA%B3%84-%7C-%ED%8C%A8%ED%82%A4%EC%A7%80-%EA%B5%AC%EC%A1%B0)

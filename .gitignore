@@ -1,8 +1,20 @@
-# Compiled class file
+# Gradle files
+.gradle/
+build/
+
+# IntelliJ IDEA files
+.idea/
+*.iml
+
+# Java class files
 *.class
 
-# Log file
+# Spring Boot specific files
 *.log
+
+# Environment-specific files
+*.env
+.DS_Store
 
 # BlueJ files
 *.ctxt

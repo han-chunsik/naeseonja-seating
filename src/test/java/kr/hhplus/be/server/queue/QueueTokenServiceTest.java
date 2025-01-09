@@ -267,4 +267,57 @@ public class QueueTokenServiceTest {
         }
 
     }
+
+    @Nested
+    @DisplayName("isValidTokenTest")
+    class isValidTokenTest {
+        @Test
+        @DisplayName("실패: 토큰이 존재하지 않을 경우 false 반환")
+        void 존재하지_않는_토큰() {
+            // Given
+            String token = "invalid_token";
+            when(queueTokenRepository.findFirstByToken(token)).thenReturn(null);
+
+            // When&Then
+            assertFalse(queueTokenService.isValidToken(token));
+        }
+        @Test
+        @DisplayName("실패: 만료 된 토큰일 경우 false 반환")
+        void 만료된_토큰() {
+            // Given
+            QueueToken expiredToken = QueueToken.builder()
+                    .id(2L)
+                    .userId(2L)
+                    .token("expiredToken")
+                    .status(QueueToken.Status.EXPIRED)
+                    .createdAt(LocalDateTime.now().minusDays(1))
+                    .activatedAt(null)
+                    .build();
+
+            when(queueTokenRepository.findFirstByToken("expiredToken")).thenReturn(expiredToken);
+
+            // When&Then
+            assertFalse(queueTokenService.isValidToken(expiredToken.getToken()));
+        }
+
+        @Test
+        @DisplayName("성공: 유효한 토큰일 경우 true 반환")
+        void 유효한_토큰() {
+            // Given
+            QueueToken expiredToken = QueueToken.builder()
+                    .id(2L)
+                    .userId(2L)
+                    .token("validToken")
+                    .status(QueueToken.Status.AVAILABLE)
+                    .createdAt(LocalDateTime.now().minusDays(1))
+                    .activatedAt(LocalDateTime.now().minusDays(1))
+                    .build();
+
+            when(queueTokenRepository.findFirstByToken("validToken")).thenReturn(expiredToken);
+
+            // When&Then
+            assertTrue(queueTokenService.isValidToken(expiredToken.getToken()));
+        }
+    }
+
 }

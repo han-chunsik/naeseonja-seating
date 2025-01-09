@@ -282,7 +282,7 @@ public class QueueTokenServiceTest {
             assertFalse(queueTokenService.isValidToken(token));
         }
         @Test
-        @DisplayName("실패: 만료 된 토큰일 경우 false 반환")
+        @DisplayName("실패: 활성 토큰이 아닐 경우 false 반환")
         void 만료된_토큰() {
             // Given
             QueueToken expiredToken = QueueToken.builder()

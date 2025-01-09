@@ -116,8 +116,8 @@ public class QueueTokenService {
             return false;
         }
 
-        // 토큰이 만료되었을 경우 false
-        return queueToken.getStatus() != QueueToken.Status.EXPIRED;
+        // 토큰이 활성 상태가 아닐 경우 false
+        return queueToken.getStatus() == QueueToken.Status.AVAILABLE;
     }
 
 }

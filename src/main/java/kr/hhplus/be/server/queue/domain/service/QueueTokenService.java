@@ -108,4 +108,16 @@ public class QueueTokenService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public boolean isValidToken(String token) {
+        // 토큰이 존재하지 않는 경우 false
+        QueueToken queueToken = queueTokenRepository.findFirstByToken(token);
+        if (queueToken == null) {
+            return false;
+        }
+
+        // 토큰이 만료되었을 경우 false
+        return queueToken.getStatus() != QueueToken.Status.EXPIRED;
+    }
+
 }

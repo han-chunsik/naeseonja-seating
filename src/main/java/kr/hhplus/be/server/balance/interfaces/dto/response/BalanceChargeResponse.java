@@ -6,13 +6,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class BalanceChargeResponseDTO {
+public class BalanceChargeResponse {
     private long userId;
     private long amount;
     private long finalBalance;
 
     @Builder
-    public BalanceChargeResponseDTO(long userId, long amount, long finalBalance) {
+    public BalanceChargeResponse(long userId, long amount, long finalBalance) {
         this.userId = userId;
         this.amount = amount;
         this.finalBalance = finalBalance;

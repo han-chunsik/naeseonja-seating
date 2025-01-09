@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.balance.domain.vo;
+package kr.hhplus.be.server.balance.domain.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class BalanceVO {
+public class BalanceResult {
     private long userId;
     private long balance;
 
     @Builder
-    public BalanceVO(long userId, long balance) {
+    public BalanceResult(long userId, long balance) {
         this.userId = userId;
         this.balance = balance;
     }

@@ -4,7 +4,7 @@ import kr.hhplus.be.server.queue.domain.dto.QueueTokenPositionResult;
 import kr.hhplus.be.server.queue.domain.dto.QueueTokenResult;
 import kr.hhplus.be.server.queue.domain.entity.QueueToken;
 import kr.hhplus.be.server.queue.domain.repository.QueueTokenRepository;
-import kr.hhplus.be.server.queue.domain.service.QueueService;
+import kr.hhplus.be.server.queue.domain.service.QueueTokenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,9 +19,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class QueueServiceTest {
+public class QueueTokenServiceTest {
     @InjectMocks
-    QueueService queueService;
+    QueueTokenService queueTokenService;
 
     @Mock
     QueueTokenRepository queueTokenRepository;
@@ -44,7 +44,7 @@ public class QueueServiceTest {
                     .thenReturn(null);
 
             // When
-            QueueTokenResult result = queueService.createToken(userId);
+            QueueTokenResult result = queueTokenService.createToken(userId);
 
             // Then
             assertEquals(userId, result.getUserId());
@@ -64,7 +64,7 @@ public class QueueServiceTest {
                     .thenReturn(existingToken);
 
             // When
-            QueueTokenResult result = queueService.createToken(userId);
+            QueueTokenResult result = queueTokenService.createToken(userId);
 
             // Then
             assertEquals(userId, result.getUserId());
@@ -86,7 +86,7 @@ public class QueueServiceTest {
 
             // When & Then
             RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-                queueService.getTokenPosition("invalidToken");
+                queueTokenService.getTokenPosition("invalidToken");
             });
             assertEquals("유효하지 않은 토큰입니다.", exception.getMessage());
         }
@@ -108,7 +108,7 @@ public class QueueServiceTest {
 
             // When & Then
             RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-                queueService.getTokenPosition("expiredToken");
+                queueTokenService.getTokenPosition("expiredToken");
             });
             assertEquals("만료된 토큰입니다.", exception.getMessage());
         }
@@ -131,7 +131,7 @@ public class QueueServiceTest {
                     .thenReturn(List.of(waitingToken)); // 대기 중인 토큰 리스트
 
             // When
-            QueueTokenPositionResult result = queueService.getTokenPosition("waitingToken");
+            QueueTokenPositionResult result = queueTokenService.getTokenPosition("waitingToken");
 
             // Then
             assertNotNull(result);
@@ -155,12 +155,116 @@ public class QueueServiceTest {
             when(queueTokenRepository.findFirstByToken("availableToken")).thenReturn(availableToken);
 
             // when
-            QueueTokenPositionResult result = queueService.getTokenPosition("availableToken");
+            QueueTokenPositionResult result = queueTokenService.getTokenPosition("availableToken");
 
             // then
             assertNotNull(result);
             assertNull(result.getPosition());
             assertTrue(result.isAvailable());
         }
+    }
+    @Nested
+    @DisplayName("deleteExpiredTokenTest")
+    class deleteExpiredTokenTest {
+        @Test
+        @DisplayName("실패: 유효하지 않은 토큰 사용 시 RuntimeException 에러 발생")
+        void 유효하지_않은_토큰() {
+            // Given
+            when(queueTokenRepository.findFirstByToken("invalidToken")).thenReturn(null);
+
+            // When & Then
+            RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+                queueTokenService.getTokenPosition("invalidToken");
+            });
+            assertEquals("유효하지 않은 토큰입니다.", exception.getMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("activateTokensTest")
+    class activateTokensTest {
+        @Test
+        @DisplayName("성공: EXPIRED 상태의 토큰 삭제")
+        void 만료_토큰_삭제() {
+            // Given
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            QueueToken expiredToken = QueueToken.builder()
+                    .id(1L)
+                    .status(QueueToken.Status.EXPIRED)
+                    .createdAt(currentDateTime)
+                    .activatedAt(null)
+                    .build();
+
+            List<QueueToken> tokens = List.of(expiredToken);
+
+            when(queueTokenRepository.findQueueTokenEntitiesByCreatedAtBeforeOrActivatedAtBeforeOrStatus(any(), any(), eq(QueueToken.Status.EXPIRED)))
+                    .thenReturn(tokens);
+
+            // When
+            queueTokenService.deleteExpiredToken();
+
+            // Then
+            verify(queueTokenRepository).deleteAll(tokens);
+        }
+
+        @Test
+        @DisplayName("성공: createdAt이 6시간 전인 토큰 삭제")
+        void 여섯_시간_전_생성_토큰_삭제() {
+            LocalDateTime sixHoursAgo = LocalDateTime.now().minusHours(6);
+            QueueToken sixHoursOldToken = QueueToken.builder()
+                    .id(2L)
+                    .status(QueueToken.Status.WAITING)
+                    .createdAt(sixHoursAgo.minusMinutes(1))
+                    .activatedAt(null)
+                    .build();
+            List<QueueToken> tokens = List.of(sixHoursOldToken);
+
+            when(queueTokenRepository.findQueueTokenEntitiesByCreatedAtBeforeOrActivatedAtBeforeOrStatus(any(), any(), eq(QueueToken.Status.EXPIRED)))
+                    .thenReturn(tokens);
+
+            // When
+            queueTokenService.deleteExpiredToken();
+
+            // Then
+            verify(queueTokenRepository).deleteAll(tokens);
+        }
+
+        @Test
+        @DisplayName("성공: activatedAt이 10분 전인 토큰 삭제")
+        void 십분_전_활성화_토큰_삭제() {
+            // Given
+            LocalDateTime tenMinutesAgo = LocalDateTime.now().minusMinutes(10);
+            QueueToken tenMinutesInactiveToken = QueueToken.builder()
+                    .id(3L)
+                    .status(QueueToken.Status.WAITING)
+                    .createdAt(null)
+                    .activatedAt(tenMinutesAgo.minusMinutes(1))
+                    .build();
+            List<QueueToken> tokens = List.of(tenMinutesInactiveToken);
+
+            when(queueTokenRepository.findQueueTokenEntitiesByCreatedAtBeforeOrActivatedAtBeforeOrStatus(any(), any(), eq(QueueToken.Status.EXPIRED)))
+                    .thenReturn(tokens);
+
+            // When
+            queueTokenService.deleteExpiredToken();
+
+            // Then
+            verify(queueTokenRepository).deleteAll(tokens);
+        }
+
+        @Test
+        @DisplayName("성공: 삭제할 토큰이 없으면 삭제하지 않음")
+        void 삭제할_토큰_없음() {
+            // Given
+            when(queueTokenRepository.findQueueTokenEntitiesByCreatedAtBeforeOrActivatedAtBeforeOrStatus(any(), any(), eq(QueueToken.Status.EXPIRED)))
+                    .thenReturn(List.of());
+
+            // When
+            queueTokenService.deleteExpiredToken();
+
+            // Then
+            verify(queueTokenRepository, times(0)).deleteAll(any());
+        }
+
     }
 }

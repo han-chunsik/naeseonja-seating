@@ -5,6 +5,8 @@ import kr.hhplus.be.server.queue.domain.dto.QueueTokenResult;
 import kr.hhplus.be.server.queue.domain.entity.QueueToken;
 import kr.hhplus.be.server.queue.domain.repository.QueueTokenRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +17,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class QueueService {
+public class QueueTokenService {
 
     private final QueueTokenRepository queueTokenRepository;
 
@@ -76,4 +78,34 @@ public class QueueService {
                 .isAvailable(isAvailable)
                 .build();
     }
+
+    @Transactional
+    public void deleteExpiredToken() {
+        LocalDateTime sixHoursAgo = LocalDateTime.now().minusHours(6);
+        LocalDateTime tenMinutesAgo = LocalDateTime.now().minusMinutes(10);
+
+        List<QueueToken> tokensToDelete = queueTokenRepository
+                .findQueueTokenEntitiesByCreatedAtBeforeOrActivatedAtBeforeOrStatus(sixHoursAgo, tenMinutesAgo, QueueToken.Status.EXPIRED);
+
+        if (!tokensToDelete.isEmpty()) {
+            queueTokenRepository.deleteAll(tokensToDelete);
+        }
+    }
+
+    @Transactional
+    public void activateTokens() {
+        int activeTokenCount = queueTokenRepository.findQueueTokenEntitiesByStatus(QueueToken.Status.AVAILABLE).size();
+        int availableSlots = QueueTokenLimit.ACTIVE_QUEUE_LIMIT.getLimit() - activeTokenCount;
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        if (availableSlots > 0){
+            Pageable pageable = PageRequest.of(0, availableSlots);
+            List<QueueToken> queueTokens = queueTokenRepository.findQueueTokenEntitiesByStatusPageable(QueueToken.Status.WAITING, pageable);
+
+            queueTokens.forEach(queueToken -> queueToken.activatedStatus(currentDateTime));
+            queueTokenRepository.saveAll(queueTokens);
+        }
+    }
+
 }

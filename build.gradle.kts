@@ -53,6 +53,9 @@ dependencies {
 	implementation("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	testAnnotationProcessor("org.projectlombok:lombok")
+
+	//model mapper
+	implementation("org.modelmapper:modelmapper:3.1.1")
 }
 
 tasks.withType<Test> {

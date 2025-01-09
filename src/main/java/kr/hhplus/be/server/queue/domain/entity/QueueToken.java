@@ -33,4 +33,9 @@ public class QueueToken {
     public void changeStatus(Status status) {
         this.status = status;
     }
+
+    public void activatedStatus(LocalDateTime activatedAt) {
+        this.status = Status.AVAILABLE;
+        this.activatedAt = activatedAt;
+    }
 }

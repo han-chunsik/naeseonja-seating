@@ -1,11 +1,11 @@
 package kr.hhplus.be.server.balance.domain.service;
 
+import kr.hhplus.be.server.balance.domain.dto.BalanceChargeResult;
+import kr.hhplus.be.server.balance.domain.dto.BalanceResult;
 import kr.hhplus.be.server.balance.domain.entity.Balance;
 import kr.hhplus.be.server.balance.domain.entity.BalanceHistory;
 import kr.hhplus.be.server.balance.domain.repository.BalanceHistoryRepository;
 import kr.hhplus.be.server.balance.domain.repository.BalanceRepository;
-import kr.hhplus.be.server.balance.domain.dto.BalanceChargeResult;
-import kr.hhplus.be.server.balance.domain.dto.BalanceResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

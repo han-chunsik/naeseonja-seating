@@ -69,7 +69,7 @@ public class BalanceServiceTest {
         }
 
         @Test
-        @DisplayName("실패: 최소 금액 이하로 충전 요청할 경우 잔액 업데이트 미 호출")
+        @DisplayName("실패: 최소 금액 이하로 충전 요청할 경우 IllegalArgumentException 에러 발생 및 잔액 업데이트 미 호출")
         void 최소_충전 () {
             // Given
             Long userId = 1L;
@@ -85,7 +85,7 @@ public class BalanceServiceTest {
         }
 
         @Test
-        @DisplayName("실패: 충전 후 잔액이 최대 잔액을 넘을 경우 잔액 업데이트 미 호출")
+        @DisplayName("실패: 충전 후 잔액이 최대 잔액을 넘을 경우 IllegalArgumentException 에러 발생 및 잔액 업데이트 미 호출")
         void 초과_충전 () {
             // Given
             Long userId = 1L;

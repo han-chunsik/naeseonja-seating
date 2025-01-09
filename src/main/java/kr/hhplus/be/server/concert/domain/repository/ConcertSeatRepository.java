@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ConcertSeatRepository extends JpaRepository<Seat, Long> {
     List<Seat> findSeatsByConcertScheduleIdAndStatus(Long concertScheduleId, Seat.Status status);
+    Seat findSeatById(Long id);
 }

@@ -40,4 +40,8 @@ public class Seat {
         this.status = status;
         this.price = price;
     }
+
+    public void changeStatus(Status status) {
+        this.status = status;
+    }
 }

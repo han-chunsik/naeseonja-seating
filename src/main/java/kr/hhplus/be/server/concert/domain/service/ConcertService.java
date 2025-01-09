@@ -56,4 +56,24 @@ public class ConcertService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void activateSeat(Long seatId) {
+        Seat seat = concertSeatRepository.findSeatById(seatId);
+        if (seat.getStatus() == Seat.Status.AVAILABLE) {
+            throw new RuntimeException("이미 활성화 되어있는 좌석 입니다.");
+        }
+        seat.changeStatus(Seat.Status.AVAILABLE);
+        concertSeatRepository.save(seat);
+    }
+
+    @Transactional
+    public void deactivateSeat(Long seatId) {
+        Seat seat = concertSeatRepository.findSeatById(seatId);
+        if (seat.getStatus() == Seat.Status.NOT_AVAILABLE) {
+            throw new RuntimeException("이미 비활성화 되어있는 좌석 입니다.");
+        }
+        seat.changeStatus(Seat.Status.NOT_AVAILABLE);
+        concertSeatRepository.save(seat);
+    }
 }

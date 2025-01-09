@@ -120,4 +120,11 @@ public class QueueTokenService {
         return queueToken.getStatus() == QueueToken.Status.AVAILABLE;
     }
 
+    @Transactional
+    public void expireToken(Long userId) {
+        QueueToken queueToken = queueTokenRepository.findFirstByUserIdAndStatusNotWithLock(userId, QueueToken.Status.AVAILABLE);
+        queueToken.changeStatus(QueueToken.Status.EXPIRED);
+        queueTokenRepository.save(queueToken);
+    }
+
 }

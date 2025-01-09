@@ -5,10 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @Entity
 @Table(name = "reservation")
@@ -39,21 +41,21 @@ public class Reservation {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "reserved_at", nullable = false)
+    @Column(name = "reserved_at")
     private LocalDateTime reservedAt;
 
-    @Column(name = "expired_at", nullable = false)
+    @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 
     @Builder
-    public Reservation(Long id, Long seatId, Long userId, Long price, Status status, LocalDateTime createdAt, LocalDateTime reservedAt, LocalDateTime expiredAt) {
-        this.id = id;
+    public Reservation(Long seatId, Long userId, Long price, Status status) {
         this.seatId = seatId;
         this.userId = userId;
         this.price = price;
         this.status = status;
-        this.createdAt = createdAt;
-        this.reservedAt = reservedAt;
-        this.expiredAt = expiredAt;
+    }
+
+    public static Reservation create(Long seatId, Long userId, Long price, Status status) {
+        return new Reservation(seatId, userId, price, status);
     }
 }

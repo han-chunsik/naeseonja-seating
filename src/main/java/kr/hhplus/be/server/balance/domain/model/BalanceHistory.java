@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.balance.domain.entity;
+package kr.hhplus.be.server.balance.domain.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -33,7 +33,7 @@ public class BalanceHistory {
         CHARGE, USE
     }
 
-
+    @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -43,7 +43,11 @@ public class BalanceHistory {
         this.type = type;
     }
 
-    public static BalanceHistory createBalanceHistory(Long balanceId, Long amount, Type type) {
-        return new BalanceHistory(balanceId, amount, type);
+    public static BalanceHistory createChargeBalanceHistory(Balance userBalance, long amount) {
+        return new BalanceHistory(userBalance.getId(), amount, Type.CHARGE);
+    }
+
+    public static BalanceHistory createUseBalanceHistory(Balance userBalance, long amount) {
+        return new BalanceHistory(userBalance.getId(), amount, Type.USE);
     }
 }

@@ -1,6 +1,6 @@
-package kr.hhplus.be.server.balance.interfaces.dto.response;
+package kr.hhplus.be.server.balance.presentation.dto.response;
 
-import lombok.Builder;
+import kr.hhplus.be.server.balance.domain.dto.BalanceResult;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,9 +10,12 @@ public class BalanceResponse {
     private long userId;
     private long balance;
 
-    @Builder
     public BalanceResponse(long userId, long balance) {
         this.userId = userId;
         this.balance = balance;
+    }
+
+    public static BalanceResponse from(BalanceResult balanceResult) {
+        return new BalanceResponse(balanceResult.getUserId(), balanceResult.getBalance());
     }
 }

@@ -2,13 +2,9 @@ package kr.hhplus.be.server.reservation.interfaces.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kr.hhplus.be.server.common.code.SuccessCode;
-import kr.hhplus.be.server.common.dto.CommonResponse;
 import kr.hhplus.be.server.reservation.application.ReservationFacade;
 import kr.hhplus.be.server.reservation.interfaces.dto.request.ReservationTemporaryRequest;
-import kr.hhplus.be.server.reservation.interfaces.dto.response.ReservationTemporaryResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,20 +26,21 @@ public class ReservationController {
     @PostMapping("/temporary")
     public ResponseEntity<?> chargeBalance(@RequestBody ReservationTemporaryRequest request) {
         boolean isReserved = reservationFacade.reserveTemporary(request);
-        if (isReserved) {
-            return ResponseEntity.ok(
-                    CommonResponse.<Void>builder()
-                            .code(SuccessCode.SUCCESS.getCode())
-                            .message(SuccessCode.SUCCESS.getMessage())
-                            .build()
-            );
-        }else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    CommonResponse.<ReservationTemporaryResponse>builder()
-                            .code(HttpStatus.BAD_REQUEST.value())
-                            .message("임시 예약에 실패했습니다.")
-                            .build()
-            );
-        }
+//        if (isReserved) {
+//            return ResponseEntity.ok(
+//                    CommonResponse.<Void>builder()
+//                            .code(SuccessCode.SUCCESS.getCode())
+//                            .message(SuccessCode.SUCCESS.getMessage())
+//                            .build()
+//            );
+//        }else {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+//                    CommonResponse.<ReservationTemporaryResponse>builder()
+//                            .code(HttpStatus.BAD_REQUEST.value())
+//                            .message("임시 예약에 실패했습니다.")
+//                            .build()
+//            );
+//        }
+       return null;
     }
 }

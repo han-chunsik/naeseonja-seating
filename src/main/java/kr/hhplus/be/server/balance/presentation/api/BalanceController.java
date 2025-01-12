@@ -1,15 +1,15 @@
-package kr.hhplus.be.server.balance.interfaces.api;
+package kr.hhplus.be.server.balance.presentation.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import kr.hhplus.be.server.balance.domain.dto.BalanceChargeResult;
 import kr.hhplus.be.server.balance.domain.dto.BalanceResult;
 import kr.hhplus.be.server.balance.domain.service.BalanceService;
-import kr.hhplus.be.server.balance.interfaces.dto.request.BalanceChargeRequest;
-import kr.hhplus.be.server.balance.interfaces.dto.response.BalanceChargeResponse;
-import kr.hhplus.be.server.balance.interfaces.dto.response.BalanceResponse;
-import kr.hhplus.be.server.common.code.SuccessCode;
+import kr.hhplus.be.server.balance.presentation.dto.request.BalanceChargeRequest;
+import kr.hhplus.be.server.balance.presentation.dto.response.BalanceChargeResponse;
+import kr.hhplus.be.server.balance.presentation.dto.response.BalanceResponse;
 import kr.hhplus.be.server.common.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -28,15 +28,12 @@ public class BalanceController {
     )
     @PostMapping("/charge")
     public CommonResponse<BalanceChargeResponse> chargeBalance(@Valid @RequestBody BalanceChargeRequest request) {
-        BalanceChargeResult balanceChargeResult =  balanceService.chargeBalance(request.getUserId(), request.getAmount());
+        long userId = request.getUserId();
+        long amount = request.getAmount();
 
-        BalanceChargeResponse response = BalanceChargeResponse.builder()
-                .userId(balanceChargeResult.getUserId())
-                .amount(balanceChargeResult.getAmount())
-                .finalBalance(balanceChargeResult.getFinalBalance())
-                .build();
-
-        return new CommonResponse<>(SuccessCode.SUCCESS.getCode(), SuccessCode.SUCCESS.getMessage(), response);
+        BalanceChargeResult balanceChargeResult =  balanceService.chargeBalance(userId, amount);
+        BalanceChargeResponse response = BalanceChargeResponse.from(balanceChargeResult);
+        return new CommonResponse<BalanceChargeResponse>().success(response);
     }
 
     @Operation(
@@ -44,13 +41,9 @@ public class BalanceController {
             description = "사용자의 잔액을 조회한다."
     )
     @GetMapping("/{userId}")
-    public CommonResponse<BalanceResponse> getBalance(@PathVariable long userId){
+    public CommonResponse<BalanceResponse> getBalance(@PathVariable("userId") @Positive(message = "{balance.validation.user.id.invalid}") long userId){
         BalanceResult balanceResult = balanceService.getBalance(userId);
-
-        BalanceResponse response = BalanceResponse.builder()
-                .userId(balanceResult.getUserId())
-                .balance(balanceResult.getBalance())
-                .build();
-        return new CommonResponse<>(SuccessCode.SUCCESS.getCode(), SuccessCode.SUCCESS.getMessage(), response);
+        BalanceResponse response = BalanceResponse.from(balanceResult);
+        return new CommonResponse<BalanceResponse>().success(response);
     }
 }

@@ -1,6 +1,6 @@
-package kr.hhplus.be.server.balance.interfaces.dto.response;
+package kr.hhplus.be.server.balance.presentation.dto.response;
 
-import lombok.Builder;
+import kr.hhplus.be.server.balance.domain.dto.BalanceChargeResult;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,10 +11,13 @@ public class BalanceChargeResponse {
     private long amount;
     private long finalBalance;
 
-    @Builder
     public BalanceChargeResponse(long userId, long amount, long finalBalance) {
         this.userId = userId;
         this.amount = amount;
         this.finalBalance = finalBalance;
+    }
+
+    public static BalanceChargeResponse from(BalanceChargeResult balanceChargeResult) {
+        return new BalanceChargeResponse(balanceChargeResult.getUserId(), balanceChargeResult.getAmount(), balanceChargeResult.getFinalBalance());
     }
 }

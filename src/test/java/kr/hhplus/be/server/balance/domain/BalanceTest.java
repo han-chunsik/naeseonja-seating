@@ -48,9 +48,7 @@ public class BalanceTest {
                     balance.charge(invalidAmount)
             );
 
-            assertEquals(BalanceErrorCode.INVALID_AMOUNT.getMessage(), exception.getMessage());
-            System.out.println(exception.getMessage());
-            System.out.println(exception.getErrorCode());
+            assertEquals(BalanceErrorCode.INVALID_AMOUNT.getMessageWithArgs(invalidAmount), exception.getMessage());
         }
 
         @Test
@@ -60,7 +58,7 @@ public class BalanceTest {
             long balanceId = 1L;
             long userId = 123L;
             long invalidCurrentBalance = Balance.BalanceLimit.MAX.getValue() - 1000L;
-            long invalidAmount = 1100;
+            long invalidAmount = 1100L;
 
             Balance balance = new Balance(balanceId, userId, invalidCurrentBalance);
 
@@ -69,7 +67,7 @@ public class BalanceTest {
                     balance.charge(invalidAmount)
             );
 
-            assertEquals(BalanceErrorCode.EXCEEDS_MAX_BALANCE.getMessage(), exception.getMessage());
+            assertEquals(BalanceErrorCode.EXCEEDS_MAX_BALANCE.getMessageWithArgs(invalidCurrentBalance+invalidAmount), exception.getMessage());
         }
     }
 }

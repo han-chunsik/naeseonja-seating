@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.concert.domain.entity;
+package kr.hhplus.be.server.concert.domain.model;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -32,16 +32,11 @@ public class Seat {
     @Column(name = "price", nullable = false)
     private Long price;
 
-    @Builder
     public Seat(Long id, Long concertScheduleId, int seatNumber, Status status, Long price) {
         this.id = id;
         this.concertScheduleId = concertScheduleId;
         this.seatNumber = seatNumber;
         this.status = status;
         this.price = price;
-    }
-
-    public void changeStatus(Status status) {
-        this.status = status;
     }
 }

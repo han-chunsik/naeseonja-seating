@@ -1,6 +1,6 @@
-package kr.hhplus.be.server.concert.interfaces.dto.response;
+package kr.hhplus.be.server.concert.presentation.dto.response;
 
-import lombok.Builder;
+import kr.hhplus.be.server.concert.domain.dto.ConcertSeatResult;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,10 +11,13 @@ public class ConcertSeatResponse {
     private int seatNumber;
     private Long price;
 
-    @Builder
     public ConcertSeatResponse(Long concertScheduleId, int seatNumber, Long price) {
         this.concertScheduleId = concertScheduleId;
         this.seatNumber = seatNumber;
         this.price = price;
+    }
+
+    public static ConcertSeatResponse from(ConcertSeatResult concertSeatResult) {
+        return new ConcertSeatResponse(concertSeatResult.getConcertScheduleId(), concertSeatResult.getSeatNumber(), concertSeatResult.getPrice());
     }
 }

@@ -23,11 +23,11 @@ public class ReservationFacade {
 //        try {
         // To-Do 보상 트랜잭션 구현
             // 좌석 상태 비활성
-            concertService.deactivateSeat(request.getSeatId());
-            // 임시 예약 정보 등록
-            reservationService.creatReservedTemp(request.getSeatId(), request.getUserId(), request.getPrice());
-            // 대기열 토큰 만료
-            queueTokenService.expireToken(request.getUserId());
+//            concertService.deactivateSeat(request.getSeatId());
+//            // 임시 예약 정보 등록
+//            reservationService.creatReservedTemp(request.getSeatId(), request.getUserId(), request.getPrice());
+//            // 대기열 토큰 만료
+//            queueTokenService.expireToken(request.getUserId());
 
 //        } catch (Exception e) {
 //            // 좌석 상태 활성

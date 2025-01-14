@@ -42,12 +42,12 @@ public class Balance {
 
     public Balance charge(long amount) {
         if (amount < BalanceLimit.MIN.getValue()) {
-            throw new BalanceException(BalanceErrorCode.INVALID_AMOUNT);
+            throw new BalanceException(BalanceErrorCode.INVALID_AMOUNT, amount);
         }
 
         long newBalance = balance + amount;
         if (newBalance > BalanceLimit.MAX.getValue()) {
-            throw new BalanceException(BalanceErrorCode.EXCEEDS_MAX_BALANCE);
+            throw new BalanceException(BalanceErrorCode.EXCEEDS_MAX_BALANCE, newBalance);
         }
 
         this.balance += amount;

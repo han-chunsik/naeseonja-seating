@@ -17,8 +17,6 @@ public class QueueTokenRepositoryImpl implements QueueTokenRepository {
 
     private final QueueTokenJpaRepository queueTokenJpaRepository;
 
-    // To-Do: ModelMapper로 변경
-
     @Override
     public void deleteAll(List<QueueToken> queueTokens) {
         List<QueueTokenEntity> entities = queueTokens.stream()

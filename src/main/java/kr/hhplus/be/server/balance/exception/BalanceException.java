@@ -6,8 +6,8 @@ import lombok.Getter;
 public class BalanceException extends RuntimeException {
     private final BalanceErrorCode errorCode;
 
-    public BalanceException(BalanceErrorCode errorCode) {
-        super(errorCode.getMessage());
+    public BalanceException(BalanceErrorCode errorCode, Object... args) {
+        super(errorCode.getMessageWithArgs(args));
         this.errorCode = errorCode;
     }
 }

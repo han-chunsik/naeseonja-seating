@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.queue.interfaces.dto.response;
+package kr.hhplus.be.server.queue.presentation.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

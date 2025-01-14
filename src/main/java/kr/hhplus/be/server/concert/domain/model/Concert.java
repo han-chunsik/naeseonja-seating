@@ -1,7 +1,6 @@
-package kr.hhplus.be.server.concert.domain.entity;
+package kr.hhplus.be.server.concert.domain.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +17,6 @@ public class Concert {
     @Column(name = "concert_name", nullable = false)
     private String concertName;
 
-    @Builder
     public Concert(Long id, String concertName) {
         this.id = id;
         this.concertName = concertName;

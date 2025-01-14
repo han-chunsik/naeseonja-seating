@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class BalanceChargeRequest {
-    @Positive(message = "{balance.validation.user.id.invalid}")
+    @Positive(message = "사용자 ID는 음수일 수 없습니다.")
     private long userId;
 
-    @Positive(message = "{balance.validation.amount.id.invalid}")
+    @Positive(message = "충전 금액은 음수일 수 없습니다.")
     private long amount;
 }

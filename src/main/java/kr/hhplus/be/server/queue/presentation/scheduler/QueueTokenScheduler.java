@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.queue.interfaces.scheduler;
+package kr.hhplus.be.server.queue.presentation.scheduler;
 
 import kr.hhplus.be.server.queue.domain.service.QueueTokenService;
 import lombok.RequiredArgsConstructor;

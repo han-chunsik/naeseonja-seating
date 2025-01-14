@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.queue.interfaces.dto.request;
+package kr.hhplus.be.server.queue.presentation.dto.request;
 
 import jakarta.validation.constraints.Positive;
 import lombok.Builder;

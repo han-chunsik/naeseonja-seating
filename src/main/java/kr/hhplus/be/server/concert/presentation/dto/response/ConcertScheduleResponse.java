@@ -1,6 +1,6 @@
-package kr.hhplus.be.server.concert.interfaces.dto.response;
+package kr.hhplus.be.server.concert.presentation.dto.response;
 
-import lombok.Builder;
+import kr.hhplus.be.server.concert.domain.dto.ConcertScheduleResult;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,10 +13,13 @@ public class ConcertScheduleResponse {
     private long concertId;
     private LocalDate scheduleDate;
 
-    @Builder
     public ConcertScheduleResponse(long id, long concertId, LocalDate scheduleDate) {
         this.id = id;
         this.concertId = concertId;
         this.scheduleDate = scheduleDate;
+    }
+
+    public static ConcertScheduleResponse from(ConcertScheduleResult concertScheduleResult) {
+        return new ConcertScheduleResponse(concertScheduleResult.getId(), concertScheduleResult.getConcertId(), concertScheduleResult.getScheduleDate());
     }
 }

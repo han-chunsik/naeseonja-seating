@@ -12,15 +12,22 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class QueueTokenInterceptor implements HandlerInterceptor {
     private final QueueTokenService queueTokenService;
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader("Authorization");
+    private static final String BEARER_PREFIX = "Bearer ";
 
-        // 서비스 로직을 호출하여 토큰 유효성 체크
-        if (token == null || !queueTokenService.isValidToken(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized");
-            return false;
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
+            throw new UnauthorizedException("유효하지 않은 인증 헤더입니다.");
+        }
+
+        // Bearer 접두어 이후의 실제 토큰 추출
+        String token = authorizationHeader.substring(BEARER_PREFIX.length()).trim();
+
+        // 토큰 유효성 검증
+        if (!queueTokenService.isValidToken(token)) {
+            throw new UnauthorizedException("유효하지 않은 인증 토큰입니다.");
         }
 
         return true;

@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.concert.domain.dto;
 
-import lombok.Builder;
+import kr.hhplus.be.server.concert.domain.model.Seat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,10 +11,13 @@ public class ConcertSeatResult {
     private int seatNumber;
     private Long price;
 
-    @Builder
     public ConcertSeatResult(Long concertScheduleId, int seatNumber, Long price) {
         this.concertScheduleId = concertScheduleId;
         this.seatNumber = seatNumber;
         this.price = price;
+    }
+
+    public static ConcertSeatResult from(Seat seat) {
+        return new ConcertSeatResult(seat.getConcertScheduleId(), seat.getSeatNumber(), seat.getPrice());
     }
 }

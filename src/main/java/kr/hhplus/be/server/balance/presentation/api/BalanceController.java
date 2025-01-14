@@ -41,7 +41,7 @@ public class BalanceController {
             description = "사용자의 잔액을 조회한다."
     )
     @GetMapping("/{userId}")
-    public CommonResponse<BalanceResponse> getBalance(@PathVariable("userId") @Positive(message = "{balance.validation.user.id.invalid}") long userId){
+    public CommonResponse<BalanceResponse> getBalance(@PathVariable("userId") @Positive(message = "사용자 ID는 음수일 수 없습니다.") long userId){
         BalanceResult balanceResult = balanceService.getBalance(userId);
         BalanceResponse response = BalanceResponse.from(balanceResult);
         return new CommonResponse<BalanceResponse>().success(response);

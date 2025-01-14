@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.queue.interfaces.api;
+package kr.hhplus.be.server.queue.presentation.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,9 +8,9 @@ import kr.hhplus.be.server.common.dto.CommonResponse;
 import kr.hhplus.be.server.queue.domain.dto.QueueTokenPositionResult;
 import kr.hhplus.be.server.queue.domain.dto.QueueTokenResult;
 import kr.hhplus.be.server.queue.domain.service.QueueTokenService;
-import kr.hhplus.be.server.queue.interfaces.dto.request.QueueTokenRequest;
-import kr.hhplus.be.server.queue.interfaces.dto.response.QueueTokenPositionResponse;
-import kr.hhplus.be.server.queue.interfaces.dto.response.QueueTokenResponse;
+import kr.hhplus.be.server.queue.presentation.dto.request.QueueTokenRequest;
+import kr.hhplus.be.server.queue.presentation.dto.response.QueueTokenPositionResponse;
+import kr.hhplus.be.server.queue.presentation.dto.response.QueueTokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

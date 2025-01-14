@@ -73,7 +73,7 @@ public class BalanceServiceTest {
                     balanceService.chargeBalance(userId, amount)
             );
 
-            assertEquals(BalanceErrorCode.BALANCE_NOT_FOUND.getMessage(), exception.getMessage());
+            assertEquals(BalanceErrorCode.BALANCE_NOT_FOUND.getMessageWithArgs(userId), exception.getMessage());
             verify(balanceRepository, times(0)).save(any());
         }
 
@@ -93,7 +93,7 @@ public class BalanceServiceTest {
             BalanceException exception = assertThrows(BalanceException.class, () ->
                     balanceService.chargeBalance(userId, invalidAmount)
             );
-            assertEquals(BalanceErrorCode.INVALID_AMOUNT.getMessage(), exception.getMessage());
+            assertEquals(BalanceErrorCode.INVALID_AMOUNT.getMessageWithArgs(invalidAmount), exception.getMessage());
             verify(balanceRepository, times(0)).save(any());
         }
 
@@ -103,7 +103,7 @@ public class BalanceServiceTest {
             // Given
             Long balanceId = 1L;
             Long userId = 1L;
-            Long currentBalance = 9999999L;
+            long currentBalance = 9999999L;
             long amount = 5000L;
 
             Balance existingBalance = new Balance(balanceId, userId, currentBalance);
@@ -114,7 +114,7 @@ public class BalanceServiceTest {
                     balanceService.chargeBalance(userId, amount)
             );
 
-            assertEquals(BalanceErrorCode.EXCEEDS_MAX_BALANCE.getMessage(), exception.getMessage());
+            assertEquals(BalanceErrorCode.EXCEEDS_MAX_BALANCE.getMessageWithArgs(currentBalance+amount), exception.getMessage());
 
             verify(balanceRepository, times(0)).save(any());
         }
@@ -152,7 +152,7 @@ public class BalanceServiceTest {
             BalanceException exception =  assertThrows(BalanceException.class, () -> {
                 balanceService.getBalance(userId);
             });
-            assertEquals(BalanceErrorCode.BALANCE_NOT_FOUND.getMessage(), exception.getMessage());
+            assertEquals(BalanceErrorCode.BALANCE_NOT_FOUND.getMessageWithArgs(userId), exception.getMessage());
         }
     }
 }

@@ -44,10 +44,10 @@ public class QueueTokenService {
         QueueToken queueToken = queueTokenRepository.findFirstByToken(token)
                 .orElseThrow(() -> new QueueException(QueueErrorCode.TOKEN_NOT_FOUND, token));
 
-        // 1. 토큰 유효성 검증 - 만료 여부 확인
+        // 2. 토큰 유효성 검증 - 만료 여부 확인
         queueToken.validateExpiredToken();
 
-        // 2. 토큰 순서 조회
+        // 3. 토큰 순서 조회
         boolean isAvailable = false;
         Long position = null;
         if (queueToken.isWaiting()) {
@@ -61,7 +61,8 @@ public class QueueTokenService {
 
     @Transactional
     public void expireToken(Long userId) {
-        QueueToken queueToken = queueTokenRepository.findFirstByUserIdAndStatusNotWithLock(userId, QueueToken.Status.AVAILABLE);
+        QueueToken queueToken = queueTokenRepository.findFirstByUserIdAndStatusWithLock(userId, QueueToken.Status.AVAILABLE)
+                .orElseThrow(() -> new QueueException(QueueErrorCode.USER_TOKEN_NOT_FOUND, userId));
         queueToken.setQueueTokenExpired();
         queueTokenRepository.save(queueToken);
     }

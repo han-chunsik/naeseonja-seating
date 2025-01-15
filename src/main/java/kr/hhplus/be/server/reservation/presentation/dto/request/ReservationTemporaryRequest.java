@@ -1,6 +1,5 @@
-package kr.hhplus.be.server.reservation.interfaces.dto.request;
+package kr.hhplus.be.server.reservation.presentation.dto.request;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,12 +8,9 @@ import lombok.NoArgsConstructor;
 public class ReservationTemporaryRequest {
     private Long seatId;
     private Long userId;
-    private Long price;
 
-    @Builder
-    public ReservationTemporaryRequest(Long seatId, Long userId, Long price) {
+    public ReservationTemporaryRequest(Long seatId, Long userId) {
         this.seatId = seatId;
         this.userId = userId;
-        this.price = price;
     }
 }

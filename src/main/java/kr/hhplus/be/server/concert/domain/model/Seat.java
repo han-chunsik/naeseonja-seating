@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.concert.domain.model;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.concert.exception.ConcertErrorCode;
+import kr.hhplus.be.server.concert.exception.ConcertException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,5 +39,18 @@ public class Seat {
         this.seatNumber = seatNumber;
         this.status = status;
         this.price = price;
+    }
+
+    public void setSeatNotAvailable() {
+        this.status = Status.NOT_AVAILABLE;
+    }
+    public void setSeatAvailable() {
+        this.status = Status.AVAILABLE;
+    }
+
+    public void validateAvailableSeat() {
+        if (status == Status.NOT_AVAILABLE) {
+            throw new ConcertException(ConcertErrorCode.NOT_AVAILABLE_SEAT, id);
+        }
     }
 }

@@ -54,4 +54,28 @@ public class ConcertService {
                 .map(ConcertSeatResult::from)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void deactivateSeat(Long seatId) {
+        Seat seat = concertSeatRepository.findSeatByIdWithLock(seatId)
+                .orElseThrow(() -> new ConcertException(ConcertErrorCode.SEAT_NOT_FOUND, seatId));
+        seat.validateAvailableSeat();
+        seat.setSeatNotAvailable();
+        concertSeatRepository.save(seat);
+    }
+
+    @Transactional
+    public void activateSeat(Long seatId) {
+        Seat seat = concertSeatRepository.findSeatByIdWithLock(seatId)
+                .orElseThrow(() -> new ConcertException(ConcertErrorCode.SEAT_NOT_FOUND, seatId));
+        seat.setSeatAvailable();
+        concertSeatRepository.save(seat);
+    }
+
+    @Transactional
+    public Long getSeatPrice(Long seatId) {
+        Seat seat = concertSeatRepository.findSeatByIdWithLock(seatId)
+                .orElseThrow(() -> new ConcertException(ConcertErrorCode.SEAT_NOT_FOUND, seatId));
+        return seat.getPrice();
+    }
 }

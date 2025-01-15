@@ -67,6 +67,12 @@ public class QueueTokenRepositoryImpl implements QueueTokenRepository {
     }
 
     @Override
+    public Optional<QueueToken> findFirstByUserIdAndStatusWithLock(Long userId, QueueToken.Status status) {
+        Optional<QueueTokenEntity> entity = queueTokenJpaRepository.findFirstByUserIdAndStatusWithLock(userId, QueueTokenEntity.Status.valueOf(status.name()));
+        return entity.map(QueueToken::fromEntity);
+    }
+
+    @Override
     public Optional<QueueToken> findFirstByToken(String token) {
         Optional<QueueTokenEntity> entity = queueTokenJpaRepository.findFirstByToken(token);
         return entity.map(QueueToken::fromEntity);

@@ -17,6 +17,7 @@ import java.util.List;
         type = SecuritySchemeType.APIKEY,
         name = "Authorization", // Swagger UI에서 입력하는 이름
         description = "대기열 Token을 입력해주세요.",
+        scheme = "bearer",
         in = SecuritySchemeIn.HEADER
 )
 @Configuration

@@ -41,4 +41,20 @@ public class BalanceService {
         Balance userBalance = balanceRepository.findFirstByUserId(userId).orElseThrow(() -> new BalanceException(BalanceErrorCode.BALANCE_NOT_FOUND, userId));
         return BalanceResult.from(userBalance);
     }
+
+    @Transactional
+    public BalanceChargeResult useBalance(long userId, long amount) {
+        // 1. 사용자 잔액 조회
+        Balance userBalance = balanceRepository.findFirstByUserIdWithLock(userId).orElseThrow(() -> new BalanceException(BalanceErrorCode.BALANCE_NOT_FOUND, userId));
+
+        // 2. 잔액 사용
+        Balance updateUserBalance = userBalance.use(amount);
+        balanceRepository.save(updateUserBalance);
+
+        // 3. 잔액 사용 히스토리 저장
+        BalanceHistory balanceHistory = BalanceHistory.createUseBalanceHistory(userBalance, amount);
+        balanceHistoryRepository.save(balanceHistory);
+
+        return BalanceChargeResult.fromWithAmount(updateUserBalance, amount);
+    }
 }

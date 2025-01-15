@@ -1,7 +1,8 @@
-package kr.hhplus.be.server.reservation.domain.entity;
+package kr.hhplus.be.server.reservation.domain.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
+import kr.hhplus.be.server.reservation.exception.ReservationErrorCode;
+import kr.hhplus.be.server.reservation.exception.ReservationException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -47,7 +48,6 @@ public class Reservation {
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 
-    @Builder
     public Reservation(Long seatId, Long userId, Long price, Status status) {
         this.seatId = seatId;
         this.userId = userId;
@@ -55,7 +55,25 @@ public class Reservation {
         this.status = status;
     }
 
-    public static Reservation create(Long seatId, Long userId, Long price, Status status) {
-        return new Reservation(seatId, userId, price, status);
+    public void setResercationExpired() {
+        this.status = Status.EXPIRED;
+    }
+
+    public void setResercationReserved() {
+        this.status = Status.RESERVED;
+    }
+
+    public void setResercationHold() {
+        this.status = Status.HOLD;
+    }
+
+    public void checkAlreadyReserved(){
+        if (status == Status.RESERVED) {
+            throw new ReservationException(ReservationErrorCode.RESERVATION_RESERVED_CONFLICT, id);
+        }
+    }
+
+    public static Reservation createTempreservation(Long seatId, Long userId, Long price) {
+        return new Reservation(seatId, userId, price, Status.HOLD);
     }
 }

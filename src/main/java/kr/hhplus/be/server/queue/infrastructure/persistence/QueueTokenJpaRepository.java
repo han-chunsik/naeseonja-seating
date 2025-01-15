@@ -19,6 +19,10 @@ public interface QueueTokenJpaRepository extends JpaRepository<QueueTokenEntity,
     @Query("SELECT q FROM QueueTokenEntity q WHERE q.userId = :userId AND q.status != :status ORDER BY q.id ASC")
     QueueTokenEntity findFirstByUserIdAndStatusNotWithLock(@Param("userId") Long userId, @Param("status") QueueTokenEntity.Status status);
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT q FROM QueueTokenEntity q WHERE q.userId = :userId AND q.status = :status ORDER BY q.id ASC")
+    Optional<QueueTokenEntity> findFirstByUserIdAndStatusWithLock(@Param("userId") Long userId, @Param("status") QueueTokenEntity.Status status);
+
     List<QueueTokenEntity> findQueueTokenEntitiesByCreatedAtBeforeOrActivatedAtBeforeOrStatus(LocalDateTime createdBefore, LocalDateTime activatedBefore, QueueTokenEntity.Status status);
 
     List<QueueTokenEntity> findQueueTokenEntitiesByStatus(QueueTokenEntity.Status status);

@@ -53,4 +53,13 @@ public class Balance {
         this.balance += amount;
         return this;
     }
+
+    public Balance use(long amount) {
+        if (amount > balance) {
+            throw new BalanceException(BalanceErrorCode.INSUFFICIENT_BALANCE, amount);
+        }
+
+        this.balance -= amount;
+        return this;
+    }
 }

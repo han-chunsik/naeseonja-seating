@@ -15,7 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(queueTokenInterceptor)
-                .addPathPatterns("/api/v1/concert/**");
+                .addPathPatterns("/api/v1/concert/**")
+                .addPathPatterns("/api/v1/reservation/temporary");
     }
 
 //    @Bean

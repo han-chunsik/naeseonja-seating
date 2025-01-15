@@ -2,7 +2,7 @@ package kr.hhplus.be.server.common.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.hhplus.be.server.queue.domain.service.QueueTokenService;
+import kr.hhplus.be.server.queue.domain.service.QueueTokenValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -10,7 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @RequiredArgsConstructor
 @Component
 public class QueueTokenInterceptor implements HandlerInterceptor {
-    private final QueueTokenService queueTokenService;
+    private final QueueTokenValidationService queueTokenValidationService;
 
     private static final String BEARER_PREFIX = "Bearer ";
 
@@ -22,11 +22,10 @@ public class QueueTokenInterceptor implements HandlerInterceptor {
             throw new UnauthorizedException("유효하지 않은 인증 헤더입니다.");
         }
 
-        // Bearer 접두어 이후의 실제 토큰 추출
         String token = authorizationHeader.substring(BEARER_PREFIX.length()).trim();
 
-        // 토큰 유효성 검증
-        if (!queueTokenService.isValidToken(token)) {
+        // 활성 토큰 유효성 검증
+        if (!queueTokenValidationService.isValidToken(token)) {
             throw new UnauthorizedException("유효하지 않은 인증 토큰입니다.");
         }
 

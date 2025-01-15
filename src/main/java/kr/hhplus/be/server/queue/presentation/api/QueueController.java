@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "대기열 토큰", description = "대기열 토큰 발급/순서 조회")
 public class QueueController {
 
+    private static final String BEARER_PREFIX = "Bearer ";
+
     private final QueueTokenService queueTokenService;
 
     @Operation(
@@ -29,12 +31,7 @@ public class QueueController {
     @PostMapping("/token")
     public CommonResponse<QueueTokenResponse> createQueueToken(@Valid @RequestBody QueueTokenRequest request) {
         QueueTokenResult queueTokenResult =  queueTokenService.createToken(request.getUserId());
-
-        QueueTokenResponse response = QueueTokenResponse.builder()
-                .userId(queueTokenResult.getUserId())
-                .token(queueTokenResult.getToken())
-                .build();
-
+        QueueTokenResponse response = QueueTokenResponse.from(queueTokenResult);
         return new CommonResponse<>(SuccessCode.SUCCESS.getCode(), SuccessCode.SUCCESS.getMessage(), response);
     }
 
@@ -43,15 +40,10 @@ public class QueueController {
             description = "인증된 Bearer 토큰을 통해 고정된 대기열 순서를 반환한다."
     )
     @GetMapping("/token/position")
-    public CommonResponse<QueueTokenPositionResponse> getQueueTokenPosition(@RequestHeader("Authorization") String token) {
+    public CommonResponse<QueueTokenPositionResponse> getQueueTokenPosition(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(BEARER_PREFIX.length()).trim();
         QueueTokenPositionResult queueTokenPositionResult = queueTokenService.getTokenPosition(token);
-
-        QueueTokenPositionResponse response = QueueTokenPositionResponse.builder()
-                .position(queueTokenPositionResult.getPosition())
-                .token(queueTokenPositionResult.getToken())
-                .isAvailable(queueTokenPositionResult.isAvailable())
-                .build();
-
+        QueueTokenPositionResponse response = QueueTokenPositionResponse.from(queueTokenPositionResult);
         return new CommonResponse<>(SuccessCode.SUCCESS.getCode(), SuccessCode.SUCCESS.getMessage(), response);
     }
 }

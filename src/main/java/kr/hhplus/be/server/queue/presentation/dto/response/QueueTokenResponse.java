@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.queue.presentation.dto.response;
 
-import lombok.Builder;
+import kr.hhplus.be.server.queue.domain.dto.QueueTokenResult;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,9 +10,12 @@ public class QueueTokenResponse {
     private long userId;
     private String token;
 
-    @Builder
     public QueueTokenResponse(long userId, String token) {
         this.userId = userId;
         this.token = token;
+    }
+
+    public static QueueTokenResponse from(QueueTokenResult queueTokenResult) {
+        return new QueueTokenResponse(queueTokenResult.getUserId(), queueTokenResult.getToken());
     }
 }

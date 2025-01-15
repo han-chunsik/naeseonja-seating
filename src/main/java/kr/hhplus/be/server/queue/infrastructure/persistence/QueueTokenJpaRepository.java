@@ -10,11 +10,11 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 public interface QueueTokenJpaRepository extends JpaRepository<QueueTokenEntity, Long> {
-    QueueTokenEntity findFirstByToken(String token);
-
+    Optional<QueueTokenEntity> findFirstByToken(String token);
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT q FROM QueueTokenEntity q WHERE q.userId = :userId AND q.status != :status ORDER BY q.id ASC")
     QueueTokenEntity findFirstByUserIdAndStatusNotWithLock(@Param("userId") Long userId, @Param("status") QueueTokenEntity.Status status);

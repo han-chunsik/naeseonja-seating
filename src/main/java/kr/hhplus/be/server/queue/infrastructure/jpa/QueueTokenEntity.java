@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.queue.infrastructure.jpa;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -39,7 +38,6 @@ public class QueueTokenEntity {
     @Column(name = "activated_at")
     private LocalDateTime activatedAt;
 
-    @Builder
     public QueueTokenEntity(Long id, Long userId, String token, Status status, LocalDateTime createdAt, LocalDateTime activatedAt) {
         this.id = id;
         this.userId = userId;

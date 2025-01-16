@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.reservation;
 
 import kr.hhplus.be.server.reservation.application.ReservationTemporary;
-import kr.hhplus.be.server.reservation.domain.model.Reservation;
 import kr.hhplus.be.server.reservation.domain.repository.ReservationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;

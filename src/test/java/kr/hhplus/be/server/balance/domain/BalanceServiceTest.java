@@ -155,4 +155,66 @@ public class BalanceServiceTest {
             assertEquals(BalanceErrorCode.BALANCE_NOT_FOUND.getMessageWithArgs(userId), exception.getMessage());
         }
     }
+
+    @Nested
+    @DisplayName("useBalanceTest")
+    class useBalanceTest {
+        @Test
+        @DisplayName("사용자의 잔액이 이미 존재하는 경우, 잔액을 충전하고, 잔액 충전 이력을 저장 메서드를 호출한다.")
+        void 사용() {
+            // Given
+            Long balanceId = 1L;
+            Long userId = 1L;
+            long currentBalance = 10000L;
+            long amount = 5000L;
+
+            Balance existingBalance = new Balance(balanceId, userId, currentBalance);
+            when(balanceRepository.findFirstByUserIdWithLock(userId)).thenReturn(Optional.of(existingBalance));
+
+            // When
+            BalanceChargeResult result = balanceService.useBalance(userId, amount);
+
+            //Then
+            assertEquals(currentBalance - amount, result.getFinalBalance());
+            verify(balanceHistoryRepository, times(1)).save(any());
+        }
+
+        @Test
+        @DisplayName("사용자의 잔액이 존재하지 않는 경우, BalanceException 에러 발생 및 잔액 업데이트를 호출하지 않는다.")
+        void 사용자_잔액_존재하지_않음 () {
+            //  Given
+            long userId = 1L;
+            long amount = 5000L;
+
+            when(balanceRepository.findFirstByUserIdWithLock(userId)).thenReturn(Optional.empty());
+
+            // When & Then
+            BalanceException exception = assertThrows(BalanceException.class, () ->
+                    balanceService.useBalance(userId, amount)
+            );
+
+            assertEquals(BalanceErrorCode.BALANCE_NOT_FOUND.getMessageWithArgs(userId), exception.getMessage());
+            verify(balanceRepository, times(0)).save(any());
+        }
+
+        @Test
+        @DisplayName("보유 잔액 이상 금액을 입력할 경우, BalanceException 에러 발생 및 잔액 업데이트를 호출하지 않는다.")
+        void 초과_사용 () {
+            // Given
+            Long balanceId = 1L;
+            long userId = 1L;
+            long invalidAmount = 10000L;
+            Long currentBalance = 3000L;
+
+            Balance existingBalance = new Balance(balanceId, userId, currentBalance);
+            when(balanceRepository.findFirstByUserIdWithLock(userId)).thenReturn(Optional.of(existingBalance));
+
+            // When & Then
+            BalanceException exception = assertThrows(BalanceException.class, () ->
+                    balanceService.useBalance(userId, invalidAmount)
+            );
+            assertEquals(BalanceErrorCode.INSUFFICIENT_BALANCE.getMessageWithArgs(invalidAmount), exception.getMessage());
+            verify(balanceRepository, times(0)).save(any());
+        }
+    }
 }

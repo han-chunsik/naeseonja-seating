@@ -41,7 +41,7 @@ public class ConcertService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ConcertSeatResult> getAvailableSeatList(Long concertScheduleId) {
         ConcertSchedule concertSchedule = concertScheduleRepository
                 .findConcertScheduleById(concertScheduleId)

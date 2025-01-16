@@ -23,7 +23,7 @@ public class QueueTokenInterceptor implements HandlerInterceptor {
         }
 
         String token = authorizationHeader.substring(BEARER_PREFIX.length()).trim();
-
+        System.out.println(queueTokenValidationService.isValidToken(token));
         // 활성 토큰 유효성 검증
         if (!queueTokenValidationService.isValidToken(token)) {
             throw new UnauthorizedException("유효하지 않은 인증 토큰입니다.");

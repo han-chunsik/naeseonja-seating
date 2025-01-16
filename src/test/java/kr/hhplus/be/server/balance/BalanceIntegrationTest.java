@@ -36,7 +36,7 @@ public class BalanceIntegrationTest {
         public void 동일한_사용자_충전() throws Exception {
             //Given
             int threadCount = 2;
-            long userId = 2L;
+            long userId = 1L;
             long[] amounts = {1000L, 2000L};
 
             CountDownLatch doneSignal = new CountDownLatch(threadCount);
@@ -67,6 +67,45 @@ public class BalanceIntegrationTest {
             log.info("충전 전 잔액: {}", currentBalance.getBalance());
             log.info("충전 요청 잔액: {}", totalChargeAmount);
             log.info("충전 후 예상 잔액: {}", expectedBalance);
+            assertEquals(expectedBalance, finalBalance.getBalance());
+        }
+
+        @Test
+        @DisplayName("동일한 사용자 사용이 2번 이상 발생할 경우 데이터 정합성 확인")
+        public void 동일한_사용자_사용() throws Exception {
+            //Given
+            int threadCount = 2;
+            long userId = 1L;
+            long[] amounts = {100L, 200L};
+
+            CountDownLatch doneSignal = new CountDownLatch(threadCount);
+            ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+
+            Balance currentBalance = balanceRepository.findFirstByUserId(userId).get();
+
+            //When
+            for (int i = 0; i < threadCount; i++) {
+                long amount = amounts[i];
+                executorService.execute(() -> {
+                    try {
+                        balanceService.useBalance(userId, amount);
+                    } catch (Exception e) {
+                        log.error("An error occurred: ", e);
+                    } finally {
+                        doneSignal.countDown();
+                    }
+                });
+            }
+            doneSignal.await();
+            executorService.shutdown();
+
+            //Then
+            Balance finalBalance = balanceRepository.findFirstByUserId(userId).get();
+            long totalUseAmount = Arrays.stream(amounts).sum();
+            long expectedBalance = currentBalance.getBalance() - totalUseAmount;
+            log.info("사용 전 잔액: {}", currentBalance.getBalance());
+            log.info("사용 요청 잔액: {}", totalUseAmount);
+            log.info("사용 후 예상 잔액: {}", expectedBalance);
             assertEquals(expectedBalance, finalBalance.getBalance());
         }
     }

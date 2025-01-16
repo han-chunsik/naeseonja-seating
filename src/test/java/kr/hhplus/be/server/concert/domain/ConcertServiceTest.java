@@ -1,7 +1,5 @@
 package kr.hhplus.be.server.concert.domain;
 
-import kr.hhplus.be.server.balance.exception.BalanceErrorCode;
-import kr.hhplus.be.server.balance.exception.BalanceException;
 import kr.hhplus.be.server.concert.domain.dto.ConcertScheduleResult;
 import kr.hhplus.be.server.concert.domain.dto.ConcertSeatResult;
 import kr.hhplus.be.server.concert.domain.model.Concert;
@@ -22,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

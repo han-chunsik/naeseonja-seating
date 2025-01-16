@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,5 +78,15 @@ public class ConcertService {
         Seat seat = concertSeatRepository.findSeatByIdWithLock(seatId)
                 .orElseThrow(() -> new ConcertException(ConcertErrorCode.SEAT_NOT_FOUND, seatId));
         return seat.getPrice();
+    }
+
+    @Transactional
+    public void activateSeatList(List<Long> seatIdList) {
+        seatIdList.stream()
+            .map(seatId -> concertSeatRepository.findSeatByIdWithLock(seatId).orElse(null))
+                .filter(Objects::nonNull)
+                .forEach(seat -> {seat.setSeatAvailable();
+                concertSeatRepository.save(seat);
+            });
     }
 }

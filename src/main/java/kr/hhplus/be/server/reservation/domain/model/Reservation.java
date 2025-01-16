@@ -55,16 +55,14 @@ public class Reservation {
         this.status = status;
     }
 
-    public void setResercationExpired() {
+    public void setReservationExpired() {
         this.status = Status.EXPIRED;
+        this.expiredAt = LocalDateTime.now();
     }
 
-    public void setResercationReserved() {
+    public void setReservationReserved() {
         this.status = Status.RESERVED;
-    }
-
-    public void setResercationHold() {
-        this.status = Status.HOLD;
+        this.reservedAt = LocalDateTime.now();
     }
 
     public void checkAlreadyReserved(){

@@ -8,6 +8,11 @@ import kr.hhplus.be.server.reservation.exception.ReservationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
@@ -23,27 +28,18 @@ public class ReservationService {
     @Transactional
     public void cancelReservedTemp(Long seatId, Long userId) {
         reservationRepository.findFirstBySeatIdAndUserId(seatId, userId).ifPresent(reservation -> {
-            reservation.setResercationExpired();
+            reservation.setReservationExpired();
             reservationRepository.save(reservation);
         });
     }
 
     @Transactional
     public void confirm(Long reservationId, Long userId) {
-        // 예약 상태 변경
         Reservation reservation = reservationRepository.findFirstByIdAndUserId(reservationId, userId)
                 .orElseThrow(() -> new ReservationException(ReservationErrorCode.RESERVATION_NOT_FOUND, reservationId));
-        reservation.setResercationReserved();
+        reservation.setReservationReserved();
         reservationRepository.save(reservation);
 
-    }
-
-    @Transactional
-    public void holdReserved(Long reservationId, Long userId) {
-        reservationRepository.findFirstByIdAndUserId(reservationId, userId).ifPresent(reservation -> {
-            reservation.setResercationHold();
-            reservationRepository.save(reservation);
-        });
     }
 
     @Transactional
@@ -52,5 +48,23 @@ public class ReservationService {
                 .orElseThrow(() -> new ReservationException(ReservationErrorCode.RESERVATION_NOT_FOUND, reservationId));
         reservation.checkAlreadyReserved();
         return reservation;
+    }
+
+    @Transactional
+    public List<Long> deleteExpiredTempReservations() {
+        LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(5);
+
+        List<Reservation> expiredTempReservations = reservationRepository
+                .findAllByStatusAndCreatedAtBefore(Reservation.Status.HOLD, fiveMinutesAgo);
+
+        if (!expiredTempReservations.isEmpty()) {
+            expiredTempReservations.forEach(Reservation::setReservationExpired);
+            reservationRepository.saveAll(expiredTempReservations);
+
+            return expiredTempReservations.stream()
+                    .map(Reservation::getSeatId)
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 }

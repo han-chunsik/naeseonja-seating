@@ -21,7 +21,7 @@ public class SeatTest {
             Seat seat = new Seat(1L, 1L, 1, Seat.Status.NOT_AVAILABLE, 1000L);
 
             // When&Then
-            ConcertException exception = assertThrows(ConcertException.class, seat::validateAvailableSeat);
+            ConcertException exception = assertThrows(ConcertException.class, seat::validateSetNotAvailableSeat);
             assertEquals(ConcertErrorCode.NOT_AVAILABLE_SEAT.getMessageWithArgs(seat.getId()), exception.getMessage());
         }
     }

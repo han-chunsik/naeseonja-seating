@@ -56,11 +56,17 @@ public class Reservation {
     }
 
     public void setReservationExpired() {
+        if (status == Status.EXPIRED) {
+            throw new ReservationException(ReservationErrorCode.INVALID_STATUS_TRANSITION, status, Status.EXPIRED);
+        }
         this.status = Status.EXPIRED;
         this.expiredAt = LocalDateTime.now();
     }
 
     public void setReservationReserved() {
+        if (status == Status.RESERVED) {
+            throw new ReservationException(ReservationErrorCode.INVALID_STATUS_TRANSITION, status, Status.RESERVED);
+        }
         this.status = Status.RESERVED;
         this.reservedAt = LocalDateTime.now();
     }

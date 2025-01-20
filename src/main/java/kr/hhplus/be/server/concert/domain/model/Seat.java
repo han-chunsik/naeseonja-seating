@@ -41,16 +41,17 @@ public class Seat {
         this.price = price;
     }
 
-    public void setSeatNotAvailable() {
-        this.status = Status.NOT_AVAILABLE;
-    }
     public void setSeatAvailable() {
+        if (status == Status.AVAILABLE) {
+            throw new ConcertException(ConcertErrorCode.INVALID_STATUS_TRANSITION, status, Status.AVAILABLE);
+        }
         this.status = Status.AVAILABLE;
     }
 
-    public void validateAvailableSeat() {
+    public void validateSetNotAvailableSeat() {
         if (status == Status.NOT_AVAILABLE) {
             throw new ConcertException(ConcertErrorCode.NOT_AVAILABLE_SEAT, id);
         }
+        this.status = Status.NOT_AVAILABLE;
     }
 }

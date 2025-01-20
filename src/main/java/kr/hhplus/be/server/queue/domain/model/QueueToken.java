@@ -34,10 +34,16 @@ public class QueueToken {
     }
 
     public void setQueueTokenExpired() {
+        if (status == Status.EXPIRED) {
+            throw new QueueException(QueueErrorCode.INVALID_STATUS_TRANSITION, status, Status.EXPIRED);
+        }
         this.status = Status.EXPIRED;
     }
 
     public void setQueueTokenActivated() {
+        if (status == Status.AVAILABLE) {
+            throw new QueueException(QueueErrorCode.INVALID_STATUS_TRANSITION, status, Status.AVAILABLE);
+        }
         this.status = Status.AVAILABLE;
         this.activatedAt = LocalDateTime.now();
     }

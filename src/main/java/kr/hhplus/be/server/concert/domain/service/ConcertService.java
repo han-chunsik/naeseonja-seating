@@ -60,8 +60,7 @@ public class ConcertService {
     public void deactivateSeat(Long seatId) {
         Seat seat = concertSeatRepository.findSeatByIdWithLock(seatId)
                 .orElseThrow(() -> new ConcertException(ConcertErrorCode.SEAT_NOT_FOUND, seatId));
-        seat.validateAvailableSeat();
-        seat.setSeatNotAvailable();
+        seat.validateSetNotAvailableSeat();
         concertSeatRepository.save(seat);
     }
 

@@ -64,4 +64,19 @@ public class QueueTokenTest {
             assertEquals(userId, token.getUserId());
         }
     }
+
+    @Nested
+    @DisplayName("setQueueTokenExpiredTest")
+    class setQueueTokenExpiredTest {
+        @Test
+        @DisplayName("동일 상태 변경을 요청하면 QueueException을 반환한다.")
+        void 동일_상태_변경() {
+            // Given
+            QueueToken token1 = new QueueToken(null, 1L, "token1", QueueToken.Status.EXPIRED, LocalDateTime.now(), null);
+
+            // When&Then
+            QueueException exception = assertThrows(QueueException.class, token1::setQueueTokenExpired);
+            assertEquals(QueueErrorCode.INVALID_STATUS_TRANSITION.getMessageWithArgs(QueueToken.Status.EXPIRED,QueueToken.Status.EXPIRED ), exception.getMessage());
+        }
+    }
 }

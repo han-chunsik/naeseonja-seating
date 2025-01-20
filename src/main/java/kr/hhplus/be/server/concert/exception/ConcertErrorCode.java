@@ -11,7 +11,8 @@ public enum ConcertErrorCode {
         SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 스케줄 ID입니다. (요청값: %s)"),
         CONCERT_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 콘서트 ID입니다. (요청값: %s)"),
         SEAT_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 좌석 ID입니다. (요청값: %s)"),
-        NOT_AVAILABLE_SEAT(HttpStatus.BAD_REQUEST.value(), "예약 불가한 좌석입니다. (요청값: %s)");
+        NOT_AVAILABLE_SEAT(HttpStatus.BAD_REQUEST.value(), "예약 불가한 좌석입니다. (요청값: %s)"),
+        INVALID_STATUS_TRANSITION(HttpStatus.BAD_REQUEST.value(), "현재 상태에서는 요청된 상태로 전환할 수 없습니다. (현재 상태: %s, 요청 상태: %s)");
 
 
         private final int code;

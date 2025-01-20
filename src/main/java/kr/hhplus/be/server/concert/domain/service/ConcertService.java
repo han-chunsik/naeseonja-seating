@@ -2,16 +2,20 @@ package kr.hhplus.be.server.concert.domain.service;
 
 import kr.hhplus.be.server.concert.domain.dto.ConcertScheduleResult;
 import kr.hhplus.be.server.concert.domain.dto.ConcertSeatResult;
-import kr.hhplus.be.server.concert.domain.entity.ConcertSchedule;
-import kr.hhplus.be.server.concert.domain.entity.Seat;
+import kr.hhplus.be.server.concert.domain.model.ConcertSchedule;
+import kr.hhplus.be.server.concert.domain.model.Seat;
+import kr.hhplus.be.server.concert.domain.repository.ConcertRepository;
 import kr.hhplus.be.server.concert.domain.repository.ConcertScheduleRepository;
 import kr.hhplus.be.server.concert.domain.repository.ConcertSeatRepository;
+import kr.hhplus.be.server.concert.exception.ConcertErrorCode;
+import kr.hhplus.be.server.concert.exception.ConcertException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,60 +24,69 @@ public class ConcertService {
 
     private final ConcertScheduleRepository concertScheduleRepository;
     private final ConcertSeatRepository concertSeatRepository;
+    private final ConcertRepository concertRepository;
 
     @Transactional(readOnly = true)
     public List<ConcertScheduleResult> getAvailableScheduleList(Long concertId) {
+        concertRepository.findById(concertId)
+                .orElseThrow(() -> new ConcertException(ConcertErrorCode.CONCERT_NOT_FOUND, concertId));
+
         LocalDate today = LocalDate.now();
-        List<ConcertSchedule> availableConcertSchedules = concertScheduleRepository.findConcertSchedulesByConcertIdAndScheduleDateAfterAndStatus(concertId, today, ConcertSchedule.Status.AVAILABLE);
+        List<ConcertSchedule> availableConcertSchedules = concertScheduleRepository
+                .findConcertSchedulesByConcertIdAndScheduleDateAfterAndStatus(
+                concertId, today, ConcertSchedule.Status.AVAILABLE);
 
         return availableConcertSchedules.stream()
-                .map(concertSchedule -> ConcertScheduleResult.builder()
-                        .id(concertSchedule.getId())
-                        .concertId(concertSchedule.getConcertId())
-                        .scheduleDate(concertSchedule.getScheduleDate())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<ConcertSeatResult> getAvailableSeatList(Long concertScheduleId) {
-        LocalDate today = LocalDate.now();
-
-        ConcertSchedule concertSchedule = concertScheduleRepository.findConcertScheduleById(concertScheduleId);
-        LocalDate scheduleDate = concertSchedule.getScheduleDate();
-
-        if (scheduleDate.isBefore(today)) {
-            throw new IllegalArgumentException("예약 가능한 날짜는 오늘 이후여야 합니다.");
-        }
-
-        List<Seat> availableSeats = concertSeatRepository.findSeatsByConcertScheduleIdAndStatus(concertScheduleId, Seat.Status.AVAILABLE);
-
-        return availableSeats.stream()
-                .map(concertSeat -> ConcertSeatResult.builder()
-                        .concertScheduleId(concertSeat.getConcertScheduleId())
-                        .seatNumber(concertSeat.getSeatNumber())
-                        .price(concertSeat.getPrice())
-                        .build())
+                .map(ConcertScheduleResult::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void activateSeat(Long seatId) {
-        Seat seat = concertSeatRepository.findSeatById(seatId);
-        if (seat.getStatus() == Seat.Status.AVAILABLE) {
-            throw new RuntimeException("이미 활성화 되어있는 좌석 입니다.");
-        }
-        seat.changeStatus(Seat.Status.AVAILABLE);
-        concertSeatRepository.save(seat);
+    public List<ConcertSeatResult> getAvailableSeatList(Long concertScheduleId) {
+        ConcertSchedule concertSchedule = concertScheduleRepository
+                .findConcertScheduleById(concertScheduleId)
+                .orElseThrow(() -> new ConcertException(ConcertErrorCode.SCHEDULE_NOT_FOUND, concertScheduleId));
+        concertSchedule.validateScheduleDate();
+
+        List<Seat> availableSeats = concertSeatRepository.findSeatsByConcertScheduleIdAndStatus(
+                concertScheduleId, Seat.Status.AVAILABLE);
+
+        return availableSeats.stream()
+                .map(ConcertSeatResult::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public void deactivateSeat(Long seatId) {
-        Seat seat = concertSeatRepository.findSeatById(seatId);
-        if (seat.getStatus() == Seat.Status.NOT_AVAILABLE) {
-            throw new RuntimeException("이미 비활성화 되어있는 좌석 입니다.");
-        }
-        seat.changeStatus(Seat.Status.NOT_AVAILABLE);
+        Seat seat = concertSeatRepository.findSeatByIdWithLock(seatId)
+                .orElseThrow(() -> new ConcertException(ConcertErrorCode.SEAT_NOT_FOUND, seatId));
+        seat.validateAvailableSeat();
+        seat.setSeatNotAvailable();
         concertSeatRepository.save(seat);
+    }
+
+    @Transactional
+    public void activateSeat(Long seatId) {
+        Seat seat = concertSeatRepository.findSeatByIdWithLock(seatId)
+                .orElseThrow(() -> new ConcertException(ConcertErrorCode.SEAT_NOT_FOUND, seatId));
+        seat.setSeatAvailable();
+        concertSeatRepository.save(seat);
+    }
+
+    @Transactional
+    public Long getSeatPrice(Long seatId) {
+        Seat seat = concertSeatRepository.findSeatByIdWithLock(seatId)
+                .orElseThrow(() -> new ConcertException(ConcertErrorCode.SEAT_NOT_FOUND, seatId));
+        return seat.getPrice();
+    }
+
+    @Transactional
+    public void activateSeatList(List<Long> seatIdList) {
+        seatIdList.stream()
+            .map(seatId -> concertSeatRepository.findSeatByIdWithLock(seatId).orElse(null))
+                .filter(Objects::nonNull)
+                .forEach(seat -> {seat.setSeatAvailable();
+                concertSeatRepository.save(seat);
+            });
     }
 }

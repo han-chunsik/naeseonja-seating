@@ -1,13 +1,19 @@
 package kr.hhplus.be.server.concert.domain.repository;
 
-import kr.hhplus.be.server.concert.domain.entity.Seat;
+import jakarta.persistence.LockModeType;
+import kr.hhplus.be.server.concert.domain.model.Seat;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ConcertSeatRepository extends JpaRepository<Seat, Long> {
     List<Seat> findSeatsByConcertScheduleIdAndStatus(Long concertScheduleId, Seat.Status status);
-    Seat findSeatById(Long id);
+    @Lock(LockModeType.PESSIMISTIC_WRITE) // PESSIMISTIC_WRITE 잠금을 설정
+    @Query("SELECT s FROM Seat s WHERE s.id = :id")
+    Optional<Seat> findSeatByIdWithLock(Long id);
 }

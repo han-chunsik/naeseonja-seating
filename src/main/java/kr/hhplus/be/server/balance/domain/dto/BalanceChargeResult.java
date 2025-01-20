@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.balance.domain.dto;
 
-import lombok.Builder;
+import kr.hhplus.be.server.balance.domain.model.Balance;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,10 +11,13 @@ public class BalanceChargeResult {
     private long amount;
     private long finalBalance;
 
-    @Builder
     public BalanceChargeResult(long userId, long amount, long finalBalance) {
         this.userId = userId;
         this.amount = amount;
         this.finalBalance = finalBalance;
+    }
+
+    public static BalanceChargeResult fromWithAmount(Balance balance, long amount) {
+        return new BalanceChargeResult(balance.getUserId(), amount, balance.getBalance());
     }
 }

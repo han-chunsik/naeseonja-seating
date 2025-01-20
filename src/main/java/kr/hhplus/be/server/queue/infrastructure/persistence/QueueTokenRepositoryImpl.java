@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.queue.infrastructure.persistence;
 
-import kr.hhplus.be.server.queue.domain.entity.QueueToken;
+import kr.hhplus.be.server.queue.domain.model.QueueToken;
 import kr.hhplus.be.server.queue.domain.repository.QueueTokenRepository;
 import kr.hhplus.be.server.queue.infrastructure.jpa.QueueTokenEntity;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -17,33 +18,19 @@ public class QueueTokenRepositoryImpl implements QueueTokenRepository {
 
     private final QueueTokenJpaRepository queueTokenJpaRepository;
 
-    // To-Do: ModelMapper로 변경
-
     @Override
     public void deleteAll(List<QueueToken> queueTokens) {
         List<QueueTokenEntity> entities = queueTokens.stream()
-            .map(queueToken -> new QueueTokenEntity(
-               queueToken.getId(),
-               queueToken.getUserId(),
-               queueToken.getToken(),
-               QueueTokenEntity.Status.valueOf(queueToken.getStatus().name()),
-               queueToken.getCreatedAt(),
-               queueToken.getActivatedAt()
-            )).collect(Collectors.toList());
+                .map(QueueToken::toEntity)
+                .collect(Collectors.toList());
         queueTokenJpaRepository.deleteAll(entities);
     }
 
     @Override
     public void saveAll(List<QueueToken> queueTokens) {
         List<QueueTokenEntity> entities = queueTokens.stream()
-                .map(queueToken -> new QueueTokenEntity(
-                        queueToken.getId(),
-                        queueToken.getUserId(),
-                        queueToken.getToken(),
-                        QueueTokenEntity.Status.valueOf(queueToken.getStatus().name()),
-                        queueToken.getCreatedAt(),
-                        queueToken.getActivatedAt()
-                )).collect(Collectors.toList());
+                .map(QueueToken::toEntity)
+                .collect(Collectors.toList());
         queueTokenJpaRepository.saveAll(entities);
     }
 
@@ -51,14 +38,8 @@ public class QueueTokenRepositoryImpl implements QueueTokenRepository {
     public List<QueueToken> findQueueTokenEntitiesByCreatedAtBeforeOrActivatedAtBeforeOrStatus(LocalDateTime createdBefore, LocalDateTime activatedBefore, QueueToken.Status status) {
         List<QueueTokenEntity> entities = queueTokenJpaRepository.findQueueTokenEntitiesByCreatedAtBeforeOrActivatedAtBeforeOrStatus(createdBefore, activatedBefore, QueueTokenEntity.Status.valueOf(status.name()));
         return entities.stream()
-            .map(entity -> new QueueToken(
-            entity.getId(),
-            entity.getUserId(),
-            entity.getToken(),
-            QueueToken.Status.valueOf(entity.getStatus().name()),
-            entity.getCreatedAt(),
-            entity.getActivatedAt()))
-            .collect(Collectors.toList());
+                .map(QueueToken::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -66,13 +47,7 @@ public class QueueTokenRepositoryImpl implements QueueTokenRepository {
         List<QueueTokenEntity> entities = queueTokenJpaRepository.findQueueTokenEntitiesByStatusPageable(QueueTokenEntity.Status.valueOf(status.name()), pageable);
 
         return entities.stream()
-                .map(entity -> new QueueToken(
-                        entity.getId(),
-                        entity.getUserId(),
-                        entity.getToken(),
-                        QueueToken.Status.valueOf(entity.getStatus().name()),
-                        entity.getCreatedAt(),
-                        entity.getActivatedAt()))
+                .map(QueueToken::fromEntity)  // 엔티티 -> 도메인 변환
                 .collect(Collectors.toList());
     }
 
@@ -81,56 +56,32 @@ public class QueueTokenRepositoryImpl implements QueueTokenRepository {
         List<QueueTokenEntity> entities = queueTokenJpaRepository.findQueueTokenEntitiesByStatus(QueueTokenEntity.Status.valueOf(status.name()));
 
         return entities.stream()
-                .map(entity -> new QueueToken(
-                        entity.getId(),
-                        entity.getUserId(),
-                        entity.getToken(),
-                        QueueToken.Status.valueOf(entity.getStatus().name()),
-                        entity.getCreatedAt(),
-                        entity.getActivatedAt()))
+                .map(QueueToken::fromEntity)  // 엔티티 -> 도메인 변환
                 .collect(Collectors.toList());
     }
 
     @Override
     public QueueToken findFirstByUserIdAndStatusNotWithLock(Long userId, QueueToken.Status status) {
         QueueTokenEntity entity = queueTokenJpaRepository.findFirstByUserIdAndStatusNotWithLock(userId, QueueTokenEntity.Status.valueOf(status.name()));
-        return (entity != null) ? new QueueToken(
-                entity.getId(),
-                entity.getUserId(),
-                entity.getToken(),
-                QueueToken.Status.valueOf(entity.getStatus().name()),
-                entity.getCreatedAt(),
-                entity.getActivatedAt()
-        ) : null;
+        return (entity != null) ? QueueToken.fromEntity(entity) : null;
     }
 
     @Override
-    public QueueToken findFirstByToken(String token) {
-        QueueTokenEntity entity = queueTokenJpaRepository.findFirstByToken(token);
-        // converting
-        return (entity != null) ? new QueueToken(
-                entity.getId(),
-                entity.getUserId(),
-                entity.getToken(),
-                QueueToken.Status.valueOf(entity.getStatus().name()),
-                entity.getCreatedAt(),
-                entity.getActivatedAt()
-        ) : null;
+    public Optional<QueueToken> findFirstByUserIdAndStatusWithLock(Long userId, QueueToken.Status status) {
+        Optional<QueueTokenEntity> entity = queueTokenJpaRepository.findFirstByUserIdAndStatusWithLock(userId, QueueTokenEntity.Status.valueOf(status.name()));
+        return entity.map(QueueToken::fromEntity);
+    }
+
+    @Override
+    public Optional<QueueToken> findFirstByToken(String token) {
+        Optional<QueueTokenEntity> entity = queueTokenJpaRepository.findFirstByToken(token);
+        return entity.map(QueueToken::fromEntity);
     }
 
 
     @Override
     public void save(QueueToken queueToken) {
-        // converting
-        QueueTokenEntity entity = QueueTokenEntity.builder()
-                .id(queueToken.getId())
-                .userId(queueToken.getUserId())
-                .token(queueToken.getToken())
-                .status(QueueTokenEntity.Status.valueOf(queueToken.getStatus().name()))
-                .createdAt(queueToken.getCreatedAt())
-                .activatedAt(queueToken.getActivatedAt())
-                .build();
-
+        QueueTokenEntity entity = queueToken.toEntity();
         queueTokenJpaRepository.save(entity);
     }
 }

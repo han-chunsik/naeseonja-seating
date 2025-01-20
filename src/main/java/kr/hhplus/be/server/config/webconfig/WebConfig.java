@@ -15,6 +15,22 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(queueTokenInterceptor)
-                .addPathPatterns("/api/v1/concert/**");
+                .addPathPatterns("/api/v1/concert/**")
+                .addPathPatterns("/api/v1/reservation/temporary");
     }
+
+//    @Bean
+//    public MessageSource messageSource() {
+//        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+//        messageSource.setBasename("classpath:message");
+//        messageSource.setDefaultEncoding("UTF-8");
+//        return messageSource;
+//    }
+//
+//    @Override
+//    public Validator getValidator() {
+//        LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
+//        bean.setValidationMessageSource(messageSource());
+//        return bean;
+//    }
 }

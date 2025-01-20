@@ -3,9 +3,6 @@ package kr.hhplus.be.server.concert.domain.model;
 import jakarta.persistence.*;
 import kr.hhplus.be.server.concert.exception.ConcertErrorCode;
 import kr.hhplus.be.server.concert.exception.ConcertException;
-import kr.hhplus.be.server.queue.domain.model.QueueToken;
-import kr.hhplus.be.server.queue.exception.QueueErrorCode;
-import kr.hhplus.be.server.queue.exception.QueueException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -1,9 +1,6 @@
 package kr.hhplus.be.server.reservation.domain.model;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.concert.domain.model.Seat;
-import kr.hhplus.be.server.concert.exception.ConcertErrorCode;
-import kr.hhplus.be.server.concert.exception.ConcertException;
 import kr.hhplus.be.server.reservation.exception.ReservationErrorCode;
 import kr.hhplus.be.server.reservation.exception.ReservationException;
 import lombok.Getter;

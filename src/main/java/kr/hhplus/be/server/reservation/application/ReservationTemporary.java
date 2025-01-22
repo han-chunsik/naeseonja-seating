@@ -27,10 +27,10 @@ public class ReservationTemporary {
             reservationService.creatReservedTemp(seatId, userId, price);
             isSuccess = true;
         } catch (Exception e) {
-            // 좌석 상태 활성
-            concertService.activateSeat(seatId);
             // 임시 예약 정보 만료
             reservationService.cancelReservedTemp(seatId, userId);
+            // 좌석 상태 활성
+            concertService.activateSeat(seatId);
 
             throw new RuntimeException("Temporary reservation failed: " + e.getMessage(), e);
         } finally {

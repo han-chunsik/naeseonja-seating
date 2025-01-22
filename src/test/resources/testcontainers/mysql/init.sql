@@ -53,6 +53,9 @@ CREATE TABLE reservation (
      expired_at TIMESTAMP
 );
 
+ALTER TABLE balance ADD COLUMN version BIGINT DEFAULT 0;
+ALTER TABLE seat ADD COLUMN version BIGINT DEFAULT 0;
+
 
 -- 테스트 데이터
 -- 사용자 잔액 데이터 삽입

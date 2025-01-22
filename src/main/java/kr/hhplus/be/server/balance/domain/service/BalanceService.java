@@ -9,6 +9,9 @@ import kr.hhplus.be.server.balance.domain.repository.BalanceRepository;
 import kr.hhplus.be.server.balance.exception.BalanceErrorCode;
 import kr.hhplus.be.server.balance.exception.BalanceException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +24,11 @@ public class BalanceService {
     private final BalanceHistoryRepository balanceHistoryRepository;
 
     @Transactional
+    @Retryable(
+            retryFor = {ObjectOptimisticLockingFailureException.class},
+            maxAttempts = 10,
+            backoff = @Backoff(100)
+    )
     public BalanceChargeResult chargeBalance(long userId, long amount) {
         // 1. 사용자 잔액 조회
         Balance userBalance = balanceRepository.findFirstByUserIdWithLock(userId).orElseThrow(() -> new BalanceException(BalanceErrorCode.BALANCE_NOT_FOUND, userId));
@@ -43,6 +51,11 @@ public class BalanceService {
     }
 
     @Transactional
+    @Retryable(
+            retryFor = {ObjectOptimisticLockingFailureException.class},
+            maxAttempts = 10,
+            backoff = @Backoff(100)
+    )
     public BalanceChargeResult useBalance(long userId, long amount) {
         // 1. 사용자 잔액 조회
         Balance userBalance = balanceRepository.findFirstByUserIdWithLock(userId).orElseThrow(() -> new BalanceException(BalanceErrorCode.BALANCE_NOT_FOUND, userId));

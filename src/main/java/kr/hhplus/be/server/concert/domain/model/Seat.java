@@ -33,6 +33,9 @@ public class Seat {
     @Column(name = "price", nullable = false)
     private Long price;
 
+    @Version
+    private Long version;
+
     public Seat(Long id, Long concertScheduleId, int seatNumber, Status status, Long price) {
         this.id = id;
         this.concertScheduleId = concertScheduleId;

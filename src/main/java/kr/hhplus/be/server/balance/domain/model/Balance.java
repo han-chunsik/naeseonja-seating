@@ -22,6 +22,9 @@ public class Balance {
     @Column(name = "balance", nullable = false)
     private Long balance;
 
+    @Version
+    private Long version;
+
     public Balance(Long id, Long userId, Long balance) {
         this.id = id;
         this.userId = userId;

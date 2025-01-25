@@ -33,10 +33,12 @@ public class DistributedLockAop {
         long waitTime = distributedLock.waitTime();
         long leaseTime = distributedLock.leaseTime();
 
-        RLock lock;
+        RLock lock = null;
         if (distributedLock.lockType() == DistributedLock.LockType.NORMAL) {
             lock = redissonClient.getLock(lockKey);
-        } else {
+        }
+
+        if (distributedLock.lockType() == DistributedLock.LockType.FAIR){
             lock = redissonClient.getFairLock(lockKey);
         }
 
@@ -46,7 +48,8 @@ public class DistributedLockAop {
         }
 
         try {
-            return aopForTransaction.proceed(joinPoint);
+            // return aopForTransaction.proceed(joinPoint);
+            return joinPoint.proceed();
         } finally {
             if (lock.isLocked() && lock.isHeldByCurrentThread()) {
                 lock.unlock();

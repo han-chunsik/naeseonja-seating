@@ -13,7 +13,5 @@ import java.util.Optional;
 @Repository
 public interface ConcertSeatRepository extends JpaRepository<Seat, Long> {
     List<Seat> findSeatsByConcertScheduleIdAndStatus(Long concertScheduleId, Seat.Status status);
-    @Lock(LockModeType.OPTIMISTIC)
-    @Query("SELECT s FROM Seat s WHERE s.id = :id")
-    Optional<Seat> findSeatByIdWithLock(Long id);
+    Optional<Seat> findSeatById(Long id);
 }

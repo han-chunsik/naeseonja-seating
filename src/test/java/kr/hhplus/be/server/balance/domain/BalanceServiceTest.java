@@ -49,7 +49,7 @@ public class BalanceServiceTest {
             long amount = 5000L;
 
             Balance existingBalance = new Balance(balanceId, userId, currentBalance);
-            when(balanceRepository.findFirstByUserIdWithLock(userId)).thenReturn(Optional.of(existingBalance));
+            when(balanceRepository.findFirstByUserId(userId)).thenReturn(Optional.of(existingBalance));
 
             // When
             BalanceChargeResult result = balanceService.chargeBalance(userId, amount);
@@ -66,7 +66,7 @@ public class BalanceServiceTest {
             long userId = 1L;
             long amount = 5000L;
 
-            when(balanceRepository.findFirstByUserIdWithLock(userId)).thenReturn(Optional.empty());
+            when(balanceRepository.findFirstByUserId(userId)).thenReturn(Optional.empty());
 
             // When & Then
             BalanceException exception = assertThrows(BalanceException.class, () ->
@@ -87,7 +87,7 @@ public class BalanceServiceTest {
             Long currentBalance = 3000L;
 
             Balance existingBalance = new Balance(balanceId, userId, currentBalance);
-            when(balanceRepository.findFirstByUserIdWithLock(userId)).thenReturn(Optional.of(existingBalance));
+            when(balanceRepository.findFirstByUserId(userId)).thenReturn(Optional.of(existingBalance));
 
             // When & Then
             BalanceException exception = assertThrows(BalanceException.class, () ->
@@ -107,7 +107,7 @@ public class BalanceServiceTest {
             long amount = 5000L;
 
             Balance existingBalance = new Balance(balanceId, userId, currentBalance);
-            when(balanceRepository.findFirstByUserIdWithLock(userId)).thenReturn(Optional.of(existingBalance));
+            when(balanceRepository.findFirstByUserId(userId)).thenReturn(Optional.of(existingBalance));
 
             // When & Then
             BalanceException exception = assertThrows(BalanceException.class, () ->
@@ -169,7 +169,7 @@ public class BalanceServiceTest {
             long amount = 5000L;
 
             Balance existingBalance = new Balance(balanceId, userId, currentBalance);
-            when(balanceRepository.findFirstByUserIdWithLock(userId)).thenReturn(Optional.of(existingBalance));
+            when(balanceRepository.findFirstByUserId(userId)).thenReturn(Optional.of(existingBalance));
 
             // When
             BalanceChargeResult result = balanceService.useBalance(userId, amount);
@@ -186,7 +186,7 @@ public class BalanceServiceTest {
             long userId = 1L;
             long amount = 5000L;
 
-            when(balanceRepository.findFirstByUserIdWithLock(userId)).thenReturn(Optional.empty());
+            when(balanceRepository.findFirstByUserId(userId)).thenReturn(Optional.empty());
 
             // When & Then
             BalanceException exception = assertThrows(BalanceException.class, () ->
@@ -207,7 +207,7 @@ public class BalanceServiceTest {
             Long currentBalance = 3000L;
 
             Balance existingBalance = new Balance(balanceId, userId, currentBalance);
-            when(balanceRepository.findFirstByUserIdWithLock(userId)).thenReturn(Optional.of(existingBalance));
+            when(balanceRepository.findFirstByUserId(userId)).thenReturn(Optional.of(existingBalance));
 
             // When & Then
             BalanceException exception = assertThrows(BalanceException.class, () ->

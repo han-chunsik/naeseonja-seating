@@ -31,7 +31,7 @@ public class BalanceService {
     )
     public BalanceChargeResult chargeBalance(long userId, long amount) {
         // 1. 사용자 잔액 조회
-        Balance userBalance = balanceRepository.findFirstByUserIdWithLock(userId).orElseThrow(() -> new BalanceException(BalanceErrorCode.BALANCE_NOT_FOUND, userId));
+        Balance userBalance = balanceRepository.findFirstByUserId(userId).orElseThrow(() -> new BalanceException(BalanceErrorCode.BALANCE_NOT_FOUND, userId));
 
         // 2. 잔액 충전
         Balance updateUserBalance = userBalance.charge(amount);
@@ -58,7 +58,7 @@ public class BalanceService {
     )
     public BalanceChargeResult useBalance(long userId, long amount) {
         // 1. 사용자 잔액 조회
-        Balance userBalance = balanceRepository.findFirstByUserIdWithLock(userId).orElseThrow(() -> new BalanceException(BalanceErrorCode.BALANCE_NOT_FOUND, userId));
+        Balance userBalance = balanceRepository.findFirstByUserId(userId).orElseThrow(() -> new BalanceException(BalanceErrorCode.BALANCE_NOT_FOUND, userId));
 
         // 2. 잔액 사용
         Balance updateUserBalance = userBalance.use(amount);

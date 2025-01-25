@@ -12,9 +12,5 @@ import java.util.Optional;
 
 @Repository
 public interface BalanceRepository extends JpaRepository<Balance, Long> {
-    @Lock(LockModeType.OPTIMISTIC)
-    @Query("SELECT b FROM Balance b WHERE b.userId = :userId")
-    Optional<Balance> findFirstByUserIdWithLock(@Param("userId") Long userId);
-
     Optional<Balance> findFirstByUserId(Long userId);
 }

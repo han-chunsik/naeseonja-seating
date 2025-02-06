@@ -36,16 +36,10 @@ public class QueueTokenLifecycleService {
 
     @Transactional
     public void activateTokens() {
-        int activeTokenCount = queueTokenRepository.findQueueTokenEntitiesByStatus(QueueToken.Status.AVAILABLE).size();
-        int availableSlots = ACTIVE_QUEUE_LIMIT - activeTokenCount;
+        Pageable pageable = PageRequest.of(0, ACTIVE_QUEUE_LIMIT);
+        List<QueueToken> queueTokens = queueTokenRepository.findQueueTokenEntitiesByStatusPageable(QueueToken.Status.WAITING, pageable);
 
-
-        if (availableSlots > 0){
-            Pageable pageable = PageRequest.of(0, availableSlots);
-            List<QueueToken> queueTokens = queueTokenRepository.findQueueTokenEntitiesByStatusPageable(QueueToken.Status.WAITING, pageable);
-
-            queueTokens.forEach(QueueToken::setQueueTokenActivated);
-            queueTokenRepository.saveAll(queueTokens);
-        }
+        queueTokens.forEach(QueueToken::setQueueTokenActivated);
+        queueTokenRepository.saveAll(queueTokens);
     }
 }

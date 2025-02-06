@@ -23,16 +23,6 @@ public class QueueTokenRedisRepositoryImpl implements QueueTokenRepository {
     private static final String ACTIVE_TOKEN_KEY = "active_token";
 
     @Override
-    public QueueToken findFirstByUserIdAndStatusNotWithLock(Long userId, QueueToken.Status status) {
-        return null;
-    }
-
-    @Override
-    public void save(QueueToken queueToken) {
-
-    }
-
-    @Override
     public QueueToken createToken(QueueToken queueToken) {
         ZSetOperations<String, Object> zSetOps = redisTemplate.opsForZSet();
         zSetOps.add(QUEUE_TOKEN_KEY, queueToken.getToken(), Instant.now().getEpochSecond());

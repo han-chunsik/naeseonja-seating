@@ -8,8 +8,8 @@ export let options = {
 
 const BASE_URL = 'http://host.docker.internal:8080/api/v1';
 const concertScheduleIds = [1]; // 임의의 일정 ID 리스트
-const seatStart = 1216; // 시작 좌석 번호
-const seatEnd = 1265; // 마지막 좌석 번호
+const seatStart = 1279; // 시작 좌석 번호
+const seatEnd = 1328; // 마지막 좌석 번호
 const concertId = 1;
 
 export default function () {

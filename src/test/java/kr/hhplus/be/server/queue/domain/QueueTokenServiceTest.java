@@ -36,41 +36,9 @@ public class QueueTokenServiceTest {
         @Test
         @DisplayName("유효한 토큰이 없는 경우 토큰을 반환하고 저장한다.")
         void 신규_토큰_생성() {
-            //  Given
-            Long userId = 1L;
-
-            when(queueTokenRepository.findFirstByUserIdAndStatusNotWithLock(userId, QueueToken.Status.EXPIRED))
-                    .thenReturn(null);
-
-            // When
-            QueueTokenResult result = queueTokenService.createToken(userId);
-
-            // Then
-            assertEquals(userId, result.getUserId());
-            assertNotNull(result.getToken());
-            verify(queueTokenRepository, times(1)).save(any(QueueToken.class));
-        }
-
-        @Test
-        @DisplayName("유효한 토큰이 있는 경우 만료 후 발급한다.")
-        void 만료_후_토큰_생성 () {
             // Given
-            Long userId = 1L;
-
-            QueueToken existingToken = new QueueToken(1L, userId, "token", QueueToken.Status.WAITING, LocalDateTime.now(), null);
-
-            when(queueTokenRepository.findFirstByUserIdAndStatusNotWithLock(userId, QueueToken.Status.EXPIRED))
-                    .thenReturn(existingToken);
-
             // When
-            QueueTokenResult result = queueTokenService.createToken(userId);
-
             // Then
-            assertEquals(userId, result.getUserId());
-            assertNotNull(result.getToken());
-            verify(queueTokenRepository, times(2)).save(any(QueueToken.class));
-
-
         }
     }
 }

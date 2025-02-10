@@ -2,7 +2,6 @@ package kr.hhplus.be.server.queue.domain.model;
 
 import kr.hhplus.be.server.queue.exception.QueueErrorCode;
 import kr.hhplus.be.server.queue.exception.QueueException;
-import kr.hhplus.be.server.queue.infrastructure.jpa.QueueTokenEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -80,28 +79,6 @@ public class QueueToken {
             Status.WAITING,
             now,
             null
-        );
-    }
-
-    public static QueueToken fromEntity(QueueTokenEntity entity) {
-        return new QueueToken(
-                entity.getId(),
-                entity.getUserId(),
-                entity.getToken(),
-                Status.valueOf(entity.getStatus().name()),
-                entity.getCreatedAt(),
-                entity.getActivatedAt()
-        );
-    }
-
-    public QueueTokenEntity toEntity() {
-        return new QueueTokenEntity(
-                this.id,
-                this.userId,
-                this.token,
-                QueueTokenEntity.Status.valueOf(this.status.name()),
-                this.createdAt,
-                this.activatedAt
         );
     }
 }

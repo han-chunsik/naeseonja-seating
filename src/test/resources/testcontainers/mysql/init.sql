@@ -57,7 +57,7 @@ CREATE TABLE reservation (
 -- 테스트 데이터
 -- 사용자 잔액 데이터 삽입
 INSERT INTO balance (user_id, balance)
-SELECT n, 1000
+SELECT n, 50000
 FROM
     (SELECT @n := @n + 1 AS n FROM information_schema.columns, (SELECT @n := 0) AS init LIMIT 100) AS user_data;
 
@@ -80,9 +80,9 @@ SELECT
     cs.id,
     n,
     'AVAILABLE',
-    10000 -- 가격 설정
+    100 -- 가격 설정
 FROM
-    (SELECT @n := @n + 1 AS n FROM information_schema.columns, (SELECT @n := 0) AS init LIMIT 51) AS seat_numbers,
+    (SELECT @n := @n + 1 AS n FROM information_schema.columns, (SELECT @n := 0) AS init LIMIT 50) AS seat_numbers,
     concert_schedule cs
 WHERE cs.concert_id = (SELECT id FROM concert WHERE concert_name = 'Rock Concert')
   AND cs.schedule_date = CURDATE() + INTERVAL 1 DAY;

@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.reservation.event;
 
+import kr.hhplus.be.server.reservation.domain.model.Reservation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,5 +23,16 @@ public class ReservationEvent {
         this.price = price;
         this.createdAt = createdAt;
         this.reservedAt = reservedAt;
+    }
+
+    public static ReservationEvent from(Reservation reservation) {
+        return new ReservationEvent(
+                reservation.getId(),
+                reservation.getSeatId(),
+                reservation.getUserId(),
+                reservation.getPrice(),
+                reservation.getCreatedAt(),
+                reservation.getReservedAt()
+        );
     }
 }

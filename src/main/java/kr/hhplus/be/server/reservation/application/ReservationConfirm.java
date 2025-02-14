@@ -29,14 +29,7 @@ public class ReservationConfirm {
             // 예약 확정
             reservationService.confirm(reservationId,userId);
 
-            eventPublisher.publishEvent(new ReservationEvent(
-                    r.getId(),
-                    r.getSeatId(),
-                    r.getUserId(),
-                    r.getPrice(),
-                    r.getCreatedAt(),
-                    r.getReservedAt()
-            ));
+            eventPublisher.publishEvent(ReservationEvent.from(r));
 
         } catch (Exception e) {
             // 잔액 롤백

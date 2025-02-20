@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.reservation.event;
+package kr.hhplus.be.server.reservation.application.event;
 
 import kr.hhplus.be.server.reservation.domain.model.Reservation;
 import lombok.Getter;

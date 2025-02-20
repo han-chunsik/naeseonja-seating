@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.reservation.event;
+package kr.hhplus.be.server.reservation.application.event;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

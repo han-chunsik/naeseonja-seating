@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.reservation;
 
-import kr.hhplus.be.server.reservation.application.ReservationTemporary;
+import kr.hhplus.be.server.reservation.application.service.ReservationTemporary;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -30,7 +30,7 @@ public class ReservationIntegrationOneSeatTest {
         @DisplayName("하나의 좌석에 5명이 좌석 예약 요청 1개의 예약이 성공한다.")
         public void 같은_좌석_예약() throws Exception {
             //Given
-            Long seatId = 51L;
+            Long seatId = 50L;
             int threadCount = 5;
 
             AtomicLong successfulRequestCount = new AtomicLong(0);
@@ -47,6 +47,7 @@ public class ReservationIntegrationOneSeatTest {
                         reservationTemporary.reserveTemporary(seatId, finalI);
                         successfulRequestCount.incrementAndGet();
                     } catch (Exception e) {
+                        log.error(e.getMessage(), e);
                         failedRequestCount.incrementAndGet();
                     } finally {
                         doneSignal.countDown();

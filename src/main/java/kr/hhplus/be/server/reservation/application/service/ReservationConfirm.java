@@ -1,11 +1,11 @@
-package kr.hhplus.be.server.reservation.application;
+package kr.hhplus.be.server.reservation.application.service;
 
 
 import kr.hhplus.be.server.balance.domain.service.BalanceService;
 import kr.hhplus.be.server.reservation.application.dto.ReservationResult;
+import kr.hhplus.be.server.reservation.application.event.ReservationEvent;
 import kr.hhplus.be.server.reservation.domain.model.Reservation;
 import kr.hhplus.be.server.reservation.domain.service.ReservationService;
-import kr.hhplus.be.server.reservation.event.ReservationEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;

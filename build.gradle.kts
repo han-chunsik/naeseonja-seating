@@ -57,6 +57,8 @@ dependencies {
 	// swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 
+	implementation("com.fasterxml.jackson.core:jackson-databind")
+
 	//lombok
 	implementation("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")

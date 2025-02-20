@@ -67,4 +67,9 @@ public class ReservationService {
         }
         return Collections.emptyList();
     }
+
+    @Transactional
+    public Reservation getReservation(Long reservationId) {
+        return reservationRepository.getById(reservationId);
+    }
 }

@@ -1,6 +1,7 @@
-package kr.hhplus.be.server.reservation.application.event;
+package kr.hhplus.be.server.reservation.domain.event;
 
 import kr.hhplus.be.server.reservation.domain.model.Reservation;
+import kr.hhplus.be.server.reservation.domain.outbox.ReservationOutbox;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class ReservationEvent {
+public class ConfirmDataSentEvent {
     private Long id;
     private Long seatId;
     private Long userId;
@@ -16,7 +17,7 @@ public class ReservationEvent {
     private LocalDateTime createdAt;
     private LocalDateTime reservedAt;
 
-    public ReservationEvent(Long id, Long seatId, Long userId, Long price, LocalDateTime createdAt, LocalDateTime reservedAt) {
+    public ConfirmDataSentEvent(Long id, Long seatId, Long userId, Long price, LocalDateTime createdAt, LocalDateTime reservedAt) {
         this.id = id;
         this.seatId = seatId;
         this.userId = userId;
@@ -25,8 +26,8 @@ public class ReservationEvent {
         this.reservedAt = reservedAt;
     }
 
-    public static ReservationEvent from(Reservation reservation) {
-        return new ReservationEvent(
+    public static ConfirmDataSentEvent fromDomain(Reservation reservation) {
+        return new ConfirmDataSentEvent(
                 reservation.getId(),
                 reservation.getSeatId(),
                 reservation.getUserId(),
@@ -34,5 +35,12 @@ public class ReservationEvent {
                 reservation.getCreatedAt(),
                 reservation.getReservedAt()
         );
+    }
+
+    public ReservationOutbox toOutboxEntity(ConfirmDataSentEvent event) {
+        String eventType = "ConfirmDataSent";
+        String payload = event.getId().toString();
+        ReservationOutbox.Status outBoxStatus = ReservationOutbox.Status.INIT;
+        return new ReservationOutbox(eventType, payload, outBoxStatus);
     }
 }

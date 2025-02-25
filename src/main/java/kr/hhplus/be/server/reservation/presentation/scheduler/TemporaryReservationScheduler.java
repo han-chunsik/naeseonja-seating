@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.reservation.presentation.scheduler;
 
-import kr.hhplus.be.server.reservation.application.TemporaryReservationExpired;
+import kr.hhplus.be.server.reservation.application.service.TemporaryReservationExpired;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

@@ -53,13 +53,25 @@ CREATE TABLE reservation (
      expired_at TIMESTAMP
 );
 
+--아웃박스
+CREATE TABLE outbox (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    event_type VARCHAR(255),
+    payload VARCHAR(255),
+    status VARCHAR(20) NOT NULL CHECK (status IN ('INIT', 'PUBLISHED', 'FAILED')),
+    retry_cnt INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+
 
 -- 테스트 데이터
 -- 사용자 잔액 데이터 삽입
 INSERT INTO balance (user_id, balance)
 SELECT n, 50000
 FROM
-    (SELECT @n := @n + 1 AS n FROM information_schema.columns, (SELECT @n := 0) AS init LIMIT 100) AS user_data;
+    (SELECT @n := @n + 1 AS n FROM information_schema.columns, (SELECT @n := 0) AS init LIMIT 105) AS user_data;
 
 -- 콘서트 데이터 삽입
 INSERT INTO concert (concert_name)

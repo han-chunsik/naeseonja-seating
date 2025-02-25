@@ -42,3 +42,6 @@ grafana/
 
 # redis
 redis_data/
+
+# kafka
+kafka_data

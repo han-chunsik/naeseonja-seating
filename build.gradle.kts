@@ -42,15 +42,22 @@ dependencies {
 	// redis
 	implementation("org.redisson:redisson-spring-boot-starter:3.27.0")
 
-    // Test
+	// kafka
+	//implementation("org.apache.kafka:kafka-clients:3.7.2")
+	implementation("org.springframework.kafka:spring-kafka")
+
+	// Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
+	testImplementation("org.testcontainers:kafka")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	// swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+
+	implementation("com.fasterxml.jackson.core:jackson-databind")
 
 	//lombok
 	implementation("org.projectlombok:lombok")

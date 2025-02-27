@@ -15,16 +15,17 @@ public class ReservationTemporary {
     private final ReservationService reservationService;
     private final QueueTokenService queueTokenService;
 
-    public ReservationTemporaryResult reserveTemporary(Long seatId, Long userId){
+    public ReservationTemporaryResult reserveTemporary(Long seatId, Long userId) {
         Long price = concertService.getSeatPrice(seatId);
         boolean isSuccess = false;
 
         //좌석 상태 비활성
         concertService.deactivateSeat(seatId);
 
+        Long newReservationId;
         try {
             // 임시 예약 정보 등록
-            reservationService.creatReservedTemp(seatId, userId, price);
+            newReservationId = reservationService.creatReservedTemp(seatId, userId, price);
             isSuccess = true;
         } catch (Exception e) {
             // 임시 예약 정보 만료
@@ -39,6 +40,6 @@ public class ReservationTemporary {
                 queueTokenService.expireToken(userId);
             }
         }
-        return new ReservationTemporaryResult(seatId, userId, price);
+        return new ReservationTemporaryResult(newReservationId, seatId, userId, price);
     }
 }

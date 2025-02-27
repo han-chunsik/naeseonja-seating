@@ -2,8 +2,8 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 
 export let options = {
-    vus: 1, // VUs 수 지정
-    duration: '10s', // 테스트 지속 시간
+    vus: 100, // VUs 수 지정
+    duration: '1m', // 테스트 지속 시간
 };
 
 const BASE_URL = 'http://host.docker.internal:8080/api/v1';
@@ -59,15 +59,21 @@ export default function () {
 
     sleep(1);
     // 5. 임시 예약 요청
-    let reservationRes = http.post(`${BASE_URL}/reservation/temporary`, JSON.stringify({ seatId, userId }), {
+    let reservationTempRes = http.post(`${BASE_URL}/reservation/temporary`, JSON.stringify({ seatId, userId }), {
         headers: { 'Authorization': `Bearer ${queueToken}`, 'Content-Type': 'application/json' },
     });
-    check(reservationRes, { '임시 예약 성공': (res) => res.status === 200 });
-}
+    check(reservationTempRes, { '임시 예약 성공': (res) => res.status === 200 });
 
-export function handleSummary(data) {
-    console.log(`토큰 발급 횟수: ${tokenIssuedCount}`);
-    return {
-        stdout: `토큰 발급 횟수: ${tokenIssuedCount}\n`
-    };
+    let reservationJson = reservationTempRes.json();
+    if(reservationTempRes.status === 200){
+        let reservationId = reservationJson.data.reservationId;
+
+        sleep(1);
+
+        // 6. 예약 확정
+        let reservationConfirmRes = http.post(`${BASE_URL}/reservation/confirm`, JSON.stringify({ userId, reservationId }), {
+            headers: { 'Content-Type': 'application/json' },
+        });
+        check(reservationConfirmRes, { '예약 성공': (res) => res.status === 200 });
+    }
 }

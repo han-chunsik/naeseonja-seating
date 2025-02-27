@@ -2,14 +2,14 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 
 export let options = {
-    vus: 500, // VUs 수 지정
+    vus: 100, // VUs 수 지정
     duration: '1m', // 테스트 지속 시간
 };
 
 const BASE_URL = 'http://host.docker.internal:8080/api/v1';
 const concertScheduleIds = [1]; // 임의의 일정 ID 리스트
-const seatStart = 1279; // 시작 좌석 번호
-const seatEnd = 1328; // 마지막 좌석 번호
+const seatStart = 1; // 시작 좌석 번호
+const seatEnd = 50; // 마지막 좌석 번호
 const concertId = 1;
 
 export default function () {
@@ -63,11 +63,4 @@ export default function () {
         headers: { 'Authorization': `Bearer ${queueToken}`, 'Content-Type': 'application/json' },
     });
     check(reservationRes, { '임시 예약 성공': (res) => res.status === 200 });
-}
-
-export function handleSummary(data) {
-    console.log(`토큰 발급 횟수: ${tokenIssuedCount}`);
-    return {
-        stdout: `토큰 발급 횟수: ${tokenIssuedCount}\n`
-    };
 }

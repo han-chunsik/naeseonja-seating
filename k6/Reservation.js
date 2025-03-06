@@ -59,8 +59,21 @@ export default function () {
 
     sleep(1);
     // 5. 임시 예약 요청
-    let reservationRes = http.post(`${BASE_URL}/reservation/temporary`, JSON.stringify({ seatId, userId }), {
+    let reservationTempRes = http.post(`${BASE_URL}/reservation/temporary`, JSON.stringify({ seatId, userId }), {
         headers: { 'Authorization': `Bearer ${queueToken}`, 'Content-Type': 'application/json' },
     });
-    check(reservationRes, { '임시 예약 성공': (res) => res.status === 200 });
+    check(reservationTempRes, { '임시 예약 성공': (res) => res.status === 200 });
+
+    let reservationJson = reservationTempRes.json();
+    if(reservationTempRes.status === 200){
+        let reservationId = reservationJson.data.reservationId;
+
+        sleep(1);
+
+        // 6. 예약 확정
+        let reservationConfirmRes = http.post(`${BASE_URL}/reservation/confirm`, JSON.stringify({ userId, reservationId }), {
+            headers: { 'Content-Type': 'application/json' },
+        });
+        check(reservationConfirmRes, { '예약 성공': (res) => res.status === 200 });
+    }
 }

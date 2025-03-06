@@ -20,9 +20,10 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
 
     @Transactional
-    public void creatReservedTemp(Long seatId, Long userId, Long price) {
+    public Long creatReservedTemp(Long seatId, Long userId, Long price) {
         Reservation newReservation = Reservation.createTempreservation(seatId, userId, price);
         reservationRepository.save(newReservation);
+        return newReservation.getId();
     }
 
     @Transactional

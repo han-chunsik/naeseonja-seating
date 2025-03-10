@@ -3,7 +3,7 @@ spring:
   messages:
     encoding: UTF-8
   application:
-    name: hhplus
+    name: naeseonja
   profiles:
     active: local
   datasource:

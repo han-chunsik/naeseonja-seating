@@ -5,16 +5,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import kr.naeseonja.be.server.common.code.SuccessCode;
 import kr.naeseonja.be.server.common.dto.CommonResponse;
+import kr.naeseonja.be.server.concert.domain.dto.ConcertResult;
 import kr.naeseonja.be.server.concert.domain.dto.ConcertScheduleResult;
 import kr.naeseonja.be.server.concert.domain.dto.ConcertSeatResult;
 import kr.naeseonja.be.server.concert.domain.service.ConcertService;
+import kr.naeseonja.be.server.concert.presentation.dto.request.ConcertRequest;
+import kr.naeseonja.be.server.concert.presentation.dto.response.ConcertResponse;
 import kr.naeseonja.be.server.concert.presentation.dto.response.ConcertScheduleResponse;
 import kr.naeseonja.be.server.concert.presentation.dto.response.ConcertSeatResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +26,29 @@ import java.util.stream.Collectors;
 public class ConcertController {
 
     private final ConcertService concertService;
+
+    @Operation(
+            summary = "콘서트 등록",
+            description = "콘서트를 등록한다."
+    )
+    @PostMapping("")
+    public CommonResponse<ConcertResponse> createConcert(@RequestBody ConcertRequest request){
+        String concertName = request.getConcertName();
+        ConcertResult concertResult = concertService.createConcert(concertName);
+        ConcertResponse concertResponse = ConcertResponse.from(concertResult);
+        return new CommonResponse<>(SuccessCode.SUCCESS.getCode(), SuccessCode.SUCCESS.getMessage(), concertResponse);
+    }
+
+    @Operation(
+            summary = "콘서트 조회",
+            description = "콘서트를 조회한다."
+    )
+    @GetMapping("{concertId}")
+    public CommonResponse<ConcertResponse> getConcert(@RequestParam(required = false) @Positive(message = "콘서트 ID는 음수일 수 없습니다.") @PathVariable Long concertId){
+        ConcertResult concertResult = concertService.getConcert(concertId);
+        ConcertResponse concertResponse = ConcertResponse.from(concertResult);
+        return new CommonResponse<>(SuccessCode.SUCCESS.getCode(), SuccessCode.SUCCESS.getMessage(), concertResponse);
+    }
 
     @Operation(
             summary = "예약 가능 날짜 조회",

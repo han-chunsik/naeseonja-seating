@@ -1,8 +1,10 @@
 package kr.naeseonja.be.server.concert.domain.service;
 
 import kr.naeseonja.be.server.common.aop.lock.DistributedLock;
+import kr.naeseonja.be.server.concert.domain.dto.ConcertResult;
 import kr.naeseonja.be.server.concert.domain.dto.ConcertScheduleResult;
 import kr.naeseonja.be.server.concert.domain.dto.ConcertSeatResult;
+import kr.naeseonja.be.server.concert.domain.model.Concert;
 import kr.naeseonja.be.server.concert.domain.model.ConcertSchedule;
 import kr.naeseonja.be.server.concert.domain.model.Seat;
 import kr.naeseonja.be.server.concert.domain.repository.ConcertRepository;
@@ -26,6 +28,20 @@ public class ConcertService {
     private final ConcertScheduleRepository concertScheduleRepository;
     private final ConcertSeatRepository concertSeatRepository;
     private final ConcertRepository concertRepository;
+
+    @Transactional
+    public ConcertResult createConcert(String concertName) {
+        Concert newConcert = new Concert(concertName);
+        concertRepository.save(newConcert);
+        return ConcertResult.from(newConcert);
+    }
+
+    @Transactional(readOnly = true)
+    public ConcertResult getConcert(Long concertId) {
+        Concert concert = concertRepository.findById(concertId)
+                .orElseThrow(() -> new ConcertException(ConcertErrorCode.CONCERT_NOT_FOUND, concertId));
+        return ConcertResult.from(concert);
+    }
 
     @Transactional(readOnly = true)
     public List<ConcertScheduleResult> getAvailableScheduleList(Long concertId) {

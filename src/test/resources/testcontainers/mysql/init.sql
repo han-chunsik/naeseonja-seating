@@ -15,7 +15,8 @@ CREATE TABLE balance_history (
 
 CREATE TABLE concert (
      id BIGINT AUTO_INCREMENT PRIMARY KEY,
-     concert_name VARCHAR(255) NOT NULL
+     concert_name VARCHAR(255) NOT NULL,
+     created_at TIMESTAMP NOT NULL
 );
 
 CREATE TABLE concert_schedule (

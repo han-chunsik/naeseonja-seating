@@ -7,17 +7,19 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ConcertSeatResult {
+    private Long id;
     private Long concertScheduleId;
     private int seatNumber;
     private Long price;
 
-    public ConcertSeatResult(Long concertScheduleId, int seatNumber, Long price) {
+    public ConcertSeatResult(Long id, Long concertScheduleId, int seatNumber, Long price) {
+        this.id = id;
         this.concertScheduleId = concertScheduleId;
         this.seatNumber = seatNumber;
         this.price = price;
     }
 
     public static ConcertSeatResult from(Seat seat) {
-        return new ConcertSeatResult(seat.getConcertScheduleId(), seat.getSeatNumber(), seat.getPrice());
+        return new ConcertSeatResult(seat.getId(), seat.getConcertScheduleId(), seat.getSeatNumber(), seat.getPrice());
     }
 }

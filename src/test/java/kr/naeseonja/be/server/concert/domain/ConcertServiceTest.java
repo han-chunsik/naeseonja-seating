@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -74,8 +75,8 @@ public class ConcertServiceTest {
         void 유효한_콘서트_스케줄_있음 () {
             // Given
             Long concertId = 1L;
-
-            Concert mockConcert = new Concert(concertId, "Concert Name");
+            LocalDateTime currentDate = LocalDateTime.now();
+            Concert mockConcert = new Concert(concertId, "Concert Name", currentDate);
             List<ConcertSchedule> mockSchedules = List.of(
                     new ConcertSchedule(1L, concertId, LocalDate.now().plusDays(1), ConcertSchedule.Status.AVAILABLE),
                     new ConcertSchedule(2L, concertId, LocalDate.now().plusDays(2), ConcertSchedule.Status.AVAILABLE)
@@ -106,8 +107,9 @@ public class ConcertServiceTest {
         void 유효한_콘서트_스케줄_없음 () {
             // Given
             Long concertId = 1L;
+            LocalDateTime currentDate = LocalDateTime.now();
 
-            Concert mockConcert = new Concert(concertId, "Concert Name");
+            Concert mockConcert = new Concert(concertId, "Concert Name", currentDate);
             when(concertRepository.findById(concertId)).thenReturn(Optional.of(mockConcert));
             when(concertScheduleRepository.findConcertSchedulesByConcertIdAndScheduleDateAfterAndStatus(
                     eq(concertId), any(LocalDate.class), eq(ConcertSchedule.Status.AVAILABLE)))
